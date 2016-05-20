@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Bakery Lovers</string>
+    <string name="title_fragment_main">Browse Our Menu</string>
+    <string name="title_fragment_product">Product Detail</string>
+    <string name="title_fragment_order">Your Orders</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_password_repeat">Repeat password</string>
+    <string name="prompt_full_name">Full name</string>
+    <string name="prompt_phone_number">Phone number</string>
+    <string name="action_sign_in">Log in</string>
+    <string name="action_register">Register</string>
+    <string name="action_review_order">Review your order</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_repeated_password">This password doesn\'t match the previous</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_unable_to_register">Something went wrong with your registration process.</string>
+    <string name="error_unable_to_login">Something went wrong with your login process.</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
+    <string name="text_new_user">New user?</string>
+    <string name="text_click_here">Click here.</string>
+
+    <!-- string related to main activity -->
+    <string name="error_unable_to_logout">Something went wrong. Unable to logout.</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_profile_photo_desc">Profile photo</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- string related to preferences -->
+    <string name="preference_session_file_key" translatable="false">com.nanodegree.gaby.bakerylovers.PREFERENCE_SESSION_FILE_KEY</string>
+    <string name="pref_logged_email_key" translatable="false">LOGGED_EMAIL_KEY</string>
+    <string name="pref_logged_name_key" translatable="false">LOGGED_NAME_KEY</string>
+    <string name="pref_session_id_key" translatable="false">SESSION_ID_KEY</string>
+    <string name="pref_user_id_key" translatable="false">LOGGED_USER_ID</string>
+    <string name="pref_user_photo_key" translatable="false">LOGGED_USER_PHOTO</string>
+</resources>
