@@ -8,37 +8,36 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 public class DBProvider extends ContentProvider {
     private static UriMatcher sUriMatcher = buildUriMatcher();
     private DBHelper mOpenHelper;
-    private SQLiteQueryBuilder mUserQueryBuilder;
-    private SQLiteQueryBuilder mOrderQueryBuilder;
-    private SQLiteQueryBuilder mOrderDetailQueryBuilder;
-    private SQLiteQueryBuilder mProductQueryBuilder;
-    private SQLiteQueryBuilder mCurrentOrderQueryBuilder;
+    private SQLiteQueryBuilder mQueryBuilder;
     static final int USERS = 100;
     static final int USER = 101;
     static final int ORDERS = 200;
     static final int ORDER = 201;
     static final int PRODUCTS = 300;
     static final int PRODUCT = 301;
+    static final int PRODUCTS_CURRENT_ORDER = 302;
     static final int ORDER_DETAILS = 400;
     static final int ORDER_DETAIL = 401;
     static final int CURRENT_ORDER = 500;
     static final int CURRENT_DETAIL = 501;
 
-    static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.UserEntry.TABLE_NAME + "/" , USERS);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.UserEntry.TABLE_NAME, USERS);
         sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.UserEntry.TABLE_NAME + "/#", USER);
-        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderEntry.TABLE_NAME + "/" , ORDERS);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderEntry.TABLE_NAME, ORDERS);
         sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderEntry.TABLE_NAME + "/#", ORDER);
-        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.ProductEntry.TABLE_NAME + "/" , PRODUCTS);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.ProductEntry.TABLE_NAME, PRODUCTS);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.ProductEntry.TABLE_NAME + "/" + DBContract.ProductEntry.CURRENT_PATH , PRODUCTS_CURRENT_ORDER);
         sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.ProductEntry.TABLE_NAME + "/#", PRODUCT);
-        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderDetailEntry.TABLE_NAME + "/", ORDER_DETAILS);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderDetailEntry.TABLE_NAME, ORDER_DETAILS);
         sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.OrderDetailEntry.TABLE_NAME + "/#", ORDER_DETAIL);
-        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.CurrentOrderEntry.TABLE_NAME + "/" , CURRENT_ORDER);
+        sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.CurrentOrderEntry.TABLE_NAME, CURRENT_ORDER);
         sUriMatcher.addURI(DBContract.CONTENT_AUTHORITY, DBContract.CurrentOrderEntry.TABLE_NAME + "/#", CURRENT_DETAIL);
         return sUriMatcher;
     }
@@ -46,21 +45,7 @@ public class DBProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mOpenHelper = new DBHelper(getContext());
-        mUserQueryBuilder = new SQLiteQueryBuilder();
-        mUserQueryBuilder.setTables(
-                DBContract.UserEntry.TABLE_NAME);
-        mProductQueryBuilder = new SQLiteQueryBuilder();
-        mProductQueryBuilder.setTables(
-                DBContract.ProductEntry.TABLE_NAME);
-        mOrderDetailQueryBuilder = new SQLiteQueryBuilder();
-        mOrderDetailQueryBuilder.setTables(
-                DBContract.OrderDetailEntry.TABLE_NAME);
-        mOrderQueryBuilder = new SQLiteQueryBuilder();
-        mOrderQueryBuilder.setTables(
-                DBContract.OrderEntry.TABLE_NAME);
-        mCurrentOrderQueryBuilder = new SQLiteQueryBuilder();
-        mCurrentOrderQueryBuilder.setTables(
-                DBContract.CurrentOrderEntry.TABLE_NAME);
+        mQueryBuilder = new SQLiteQueryBuilder();
         return true;
     }
 
@@ -70,62 +55,38 @@ public class DBProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case USERS:
             case USER:
-                retCursor = mUserQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                mQueryBuilder.setTables(DBContract.UserEntry.TABLE_NAME);
                 break;
             case ORDERS:
             case ORDER:
-                retCursor = mOrderQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                mQueryBuilder.setTables(DBContract.OrderEntry.TABLE_NAME);
                 break;
             case PRODUCTS:
             case PRODUCT:
-                retCursor = mProductQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                mQueryBuilder.setTables(DBContract.ProductEntry.TABLE_NAME);
+                break;
+            case PRODUCTS_CURRENT_ORDER:
+                mQueryBuilder.setTables(DBContract.ProductEntry.PRODUCT_CURRENT_JOIN);
                 break;
             case ORDER_DETAILS:
             case ORDER_DETAIL:
-                retCursor = mOrderDetailQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                mQueryBuilder.setTables(DBContract.OrderDetailEntry.TABLE_NAME);
                 break;
             case CURRENT_ORDER:
             case CURRENT_DETAIL:
-                retCursor = mCurrentOrderQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                mQueryBuilder.setTables(DBContract.CurrentOrderEntry.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        retCursor = mQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
         if (retCursor != null) {
             retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         }
@@ -149,6 +110,8 @@ public class DBProvider extends ContentProvider {
                 return  DBContract.ProductEntry.CONTENT_TYPE;
             case PRODUCT:
                 return DBContract.ProductEntry.CONTENT_ITEM_TYPE;
+            case PRODUCTS_CURRENT_ORDER:
+                return  DBContract.ProductEntry.CONTENT_TYPE;
             case ORDER_DETAILS:
                 return  DBContract.OrderDetailEntry.CONTENT_TYPE;
             case ORDER_DETAIL:
@@ -215,6 +178,9 @@ public class DBProvider extends ContentProvider {
 
         if (returnUri!=null) {
             getContext().getContentResolver().notifyChange(uri, null);
+            if (match == CURRENT_ORDER) {
+                getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+            }
         }
         return returnUri;
     }
@@ -253,6 +219,9 @@ public class DBProvider extends ContentProvider {
         // Because a null deletes all rows
         if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            if (match == CURRENT_ORDER) {
+                getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+            }
         }
         return rowsDeleted;
     }
@@ -263,7 +232,6 @@ public class DBProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
         selectionArgs = new String[] {uri.getLastPathSegment()};
-
 
         switch (match) {
             case USER:
@@ -296,7 +264,66 @@ public class DBProvider extends ContentProvider {
         }
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            if (match == CURRENT_DETAIL) {
+                getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+            }
         }
         return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        String tableName = null, idColumn = null;
+
+        //determinate table
+        switch (match) {
+            case USERS:
+                tableName = DBContract.UserEntry.TABLE_NAME;
+                //idColumn = DBContract.UserEntry.COLUMN_USER_ID;
+                break;
+            case ORDERS:
+                tableName = DBContract.OrderEntry.TABLE_NAME;
+               // idColumn = DBContract.OrderEntry.COLUMN_ORDER_ID;
+                break;
+            case PRODUCTS:
+                tableName = DBContract.ProductEntry.TABLE_NAME;
+               // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
+                break;
+            case ORDER_DETAILS:
+                tableName = DBContract.OrderDetailEntry.TABLE_NAME;
+                // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
+                break;
+            case CURRENT_DETAIL:
+                tableName = DBContract.CurrentOrderEntry.TABLE_NAME;
+                // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
+                break;
+        }
+
+        //perform bulk insert
+        if(tableName != null){
+            db.beginTransaction();
+            int returnCount = 0;
+            try {
+                for (ContentValues value : values) {
+
+                    long _id = db.replace(tableName, null, value);
+                    if (_id != -1) {
+                        returnCount++;
+                    }
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            getContext().getContentResolver().notifyChange(uri, null);
+            if (tableName.equals(DBContract.ProductEntry.TABLE_NAME)) {
+                getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+            }
+            return returnCount;
+        }else{
+            return super.bulkInsert(uri, values);
+        }
     }
 }

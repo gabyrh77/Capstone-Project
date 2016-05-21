@@ -3,21 +3,15 @@ package com.nanodegree.gaby.bakerylovers.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setCheckedItem(mSelectedFragment);
 
         // cursor loader
-        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
+        getLoaderManager().initLoader(URL_LOADER, null, this);
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -302,11 +296,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onToggleOrderItemClick(boolean add, long productId) {
-        if (add) {
+    public void onToggleOrderItemClick(boolean added, long productId, double price) {
+        if (!added) {
             Toast.makeText(this, "Add to cart", Toast.LENGTH_SHORT).show();
             Intent bookIntent = new Intent(this, CurrentOrderService.class);
             bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
+            bookIntent.putExtra(CurrentOrderService.PRODUCT_PRICE, price);
             bookIntent.setAction(CurrentOrderService.ACTION_ADD);
             startService(bookIntent);
         } else {

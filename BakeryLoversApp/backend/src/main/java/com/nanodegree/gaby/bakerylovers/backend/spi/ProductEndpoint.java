@@ -14,6 +14,7 @@ import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.googlecode.objectify.Key;
 import com.nanodegree.gaby.bakerylovers.backend.db.ProductRecord;
 
 import java.util.List;
@@ -140,36 +141,38 @@ public class ProductEndpoint {
      */
     @ApiMethod(name = "product.load")
     public void loadProducts() {
-        ProductRecord record;
+        List<Key<ProductRecord>> keys = ofy().load().type(ProductRecord.class).keys().list();
+        ofy().delete().keys(keys).now();
 
         //moka torte
-        record = new ProductRecord();
-        record.setDescription("Delicious chocolate and coffee cake");
-        record.setName("Moka Torte");
-        record.setPhotoUrl("https://drive.google.com/folderview?id=0B0edS0opR3fGQmpJbms0a3lVakE&usp=sharing");
-        record.setCalories(300);
-        record.setPrice(5000);
-        record.setAvailable(true);
-        ofy().save().entity(record).now();
+        ProductRecord record1 = new ProductRecord();
+        record1.setDescription("Delicious chocolate and coffee cake");
+        record1.setName("Moka Torte");
+        record1.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/moka_torte.jpg");
+        record1.setCalories(300);
+        record1.setPrice(5000);
+        record1.setAvailable(true);
+
         //key lime pie
-        record = new ProductRecord();
-        record.setDescription("Delightfully sweet with the perfect amount of tartness, this creamy bright key lime pie recipe is indulgent comfort in every bite.");
-        record.setName("Key Lime Pie");
-        record.setPhotoUrl("https://drive.google.com/folderview?id=0B0edS0opR3fGQmpJbms0a3lVakE&usp=sharing");
-        record.setCalories(265);
-        record.setPrice(4000);
-        record.setAvailable(true);
-        ofy().save().entity(record).now();
+        ProductRecord record2 = new ProductRecord();
+        record2.setDescription("Delightfully sweet with the perfect amount of tartness, this creamy bright key lime pie recipe is indulgent comfort in every bite.");
+        record2.setName("Key Lime Pie");
+        record2.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/key_lime_pie.jpg");
+        record2.setCalories(265);
+        record2.setPrice(4000);
+        record2.setAvailable(true);
+
         //black forest cake
-        record = new ProductRecord();
-        record.setDescription("A filling of cherries and kirsch-flavored whipped cream is standard in this classic German cake.");
-        record.setName("Black Forest Cake");
-        record.setPhotoUrl("https://drive.google.com/folderview?id=0B0edS0opR3fGQmpJbms0a3lVakE&usp=sharing");
-        record.setCalories(400);
-        record.setPrice(6000);
-        record.setAvailable(true);
-        ofy().save().entity(record).now();
-        log.info("Created a new product id" + record.getId());
+        ProductRecord record3 = new ProductRecord();
+        record3.setDescription("A filling of cherries and kirsch-flavored whipped cream is standard in this classic German cake.");
+        record3.setName("Black Forest Cake");
+        record3.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/selva_negra.jpg");
+        record3.setCalories(400);
+        record3.setPrice(6000);
+        record3.setAvailable(true);
+
+        ofy().save().entities(record1, record2, record3).now();
+        log.info("Created default products");
 
         Queue queue = QueueFactory.getDefaultQueue();
         queue.add(TaskOptions.Builder.withPayload(new TopicNotificationTask()));

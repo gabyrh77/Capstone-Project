@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.register || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    registerAccount();
                     return true;
                 }
                 return false;
@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -231,7 +231,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
             mRegisterView.setVisibility(View.GONE);
             mPasswordView.setImeActionLabel(null, EditorInfo.IME_ACTION_NEXT);
             mPasswordView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mPhoneNumberView.setImeActionLabel(getString(R.string.action_register), EditorInfo.IME_ACTION_UNSPECIFIED);
+            mPhoneNumberView.setImeActionLabel(getString(R.string.action_register), R.id.register);
             mPhoneNumberView.setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED);
         } else {
             mPhoneNumberView.setVisibility(View.GONE);
@@ -302,7 +302,6 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
     }
 
     private void registerAccount() {
-        Log.d(TAG, "called register account");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -367,7 +366,6 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         }
     }
     private void attemptLogin() {
-        Log.d(TAG, "called login account");
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -508,7 +506,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-           // mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            Log.d(TAG, "token: " + acct.getIdToken());
             mUserService.loginGoogle(acct.getEmail(), acct.getDisplayName(),acct.getIdToken(), "");
         } else {
             Snackbar.make(mCoordinatorView, R.string.error_unable_to_register, Snackbar.LENGTH_LONG);

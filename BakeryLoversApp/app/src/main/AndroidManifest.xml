@@ -77,6 +77,10 @@
             android:name=".services.GCMRegistrationService"
             android:exported="false">
         </service>
+
+        <!-- my services -->
+        <service android:name=".services.CurrentOrderService"  android:exported="false"/>
+        <service android:name=".services.ProductsService"  android:exported="false"/>
     </application>
 
 </manifest>

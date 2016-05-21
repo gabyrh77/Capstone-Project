@@ -104,8 +104,7 @@
                         android:nextFocusForward="@+id/password"
                         android:imeOptions="actionNext"
                         android:maxLength="50"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:maxLines="1" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -124,8 +123,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
                         android:maxLength="20"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:maxLines="1" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -142,8 +140,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
                         android:maxLength="20"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:maxLines="1" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -160,8 +157,7 @@
                         android:nextFocusForward="@+id/phone_number"
                         android:imeOptions="actionNext"
                         android:maxLines="1"
-                        android:maxLength="50"
-                        android:singleLine="true" />
+                        android:maxLength="50" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -179,8 +175,7 @@
                         android:imeActionLabel="@string/action_register"
                         android:imeOptions="actionUnspecified"
                         android:maxLines="1"
-                        android:maxLength="20"
-                        android:singleLine="true" />
+                        android:maxLength="20" />
 
                 </android.support.design.widget.TextInputLayout>
 

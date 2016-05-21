@@ -10,12 +10,11 @@ import android.util.Log;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 
 public class CurrentOrderService extends IntentService{
-    public static final String TAG = "CurrentOrderService";
-    public static final String ACTION_ADD = "com.nanodegree.gaby.bakerylovers.services.action.ADD";
-    public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE";
-
-    public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID";
-
+    private static final String TAG = "CurrentOrderService";
+    public static final String ACTION_ADD = "com.nanodegree.gaby.bakerylovers.services.action.ADD_TO_ORDER";
+    public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE_FROM_ORDER";
+    public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID_ORDER";
+    public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
     public CurrentOrderService() {
         super(TAG);
     }
@@ -27,7 +26,7 @@ public class CurrentOrderService extends IntentService{
             final long productId = intent.getLongExtra(PRODUCT_ID, 0);
             if (productId > 0) {
                 if (ACTION_ADD.equals(action)) {
-                    addToOrder(productId);
+                    addToOrder(productId, intent.getDoubleExtra(PRODUCT_PRICE, 0));
                 } else if (ACTION_DELETE.equals(action)) {
                     deleteFromOrder(productId);
                 }
@@ -37,18 +36,18 @@ public class CurrentOrderService extends IntentService{
 
     private void deleteFromOrder(long id) {
         try {
-            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry._ID + " = ?", new String[] {String.valueOf(id)});
+            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ?", new String[] {String.valueOf(id)});
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }
     }
 
-    private void addToOrder(long id) {
+    private void addToOrder(long id, double price) {
         try {
             ContentValues values = new ContentValues();
             values.put(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID, id);
             values.put(DBContract.CurrentOrderEntry.COLUMN_AMOUNT, 1);
-            values.put(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND, 0); //TODO: the price gets passed or query here?
+            values.put(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND, price);
             getContentResolver().insert(DBContract.CurrentOrderEntry.CONTENT_URI, values);
         }catch(Exception e){
             Log.d(TAG, e.getMessage());

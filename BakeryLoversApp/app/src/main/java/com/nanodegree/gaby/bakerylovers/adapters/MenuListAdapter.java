@@ -1,7 +1,10 @@
 package com.nanodegree.gaby.bakerylovers.adapters;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,22 +12,29 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nanodegree.gaby.bakerylovers.R;
+import com.nanodegree.gaby.bakerylovers.data.DBContract;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHolder>{
-    private String[] mCursor;
+    private Cursor mCursor;
+    final private View mEmptyView;
     final private Activity mContext;
     final private MenuListAdapterOnClickHandler mClickHandler;
-    private String mokaTorteLink = "https://drive.google.com/folderview?id=0B0edS0opR3fGQmpJbms0a3lVakE&usp=sharing";
+    final private ItemChoiceManager mICM;
+    private NumberFormat mCurrencyFormat;
 
-    public MenuListAdapter(Activity context, int choiceMode) {
+    public MenuListAdapter(Activity context, View emptyView, int choiceMode) {
         super();
         mContext = context;
-       // mEmptyView = emptyView;
+        mEmptyView = emptyView;
         mClickHandler = (MenuListAdapterOnClickHandler) mContext;
-        mCursor = new String[]{"Moka Torte", "Moka Torte","Moka Torte","Moka Torte","Moka Torte","Moka Torte","Moka Torte","Moka Torte","Moka Torte"};
-       // mICM = new ItemChoiceManager(this);
-       // mICM.setChoiceMode(choiceMode);
+        mICM = new ItemChoiceManager(this);
+        mICM.setChoiceMode(choiceMode);
+        mCurrencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
     }
 
     @Override
@@ -39,17 +49,44 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.productName.setText(mCursor[position]);
-        if (true){
+        mCursor.moveToPosition(position);
+        holder.productName.setText(mCursor.getString(DBContract.ProductEntry.COLUMN_NAME_INDEX));
+        holder.productPrice.setText(mCurrencyFormat.format(mCursor.getDouble(DBContract.ProductEntry.COLUMN_PRICE_INDEX)));
+        Log.d("adapter position: ", String.valueOf(position));
+        if (mCursor.isNull(DBContract.ProductEntry.COLUMN_CURRENT_AMOUNT_INDEX)){
             holder.currentOrderButton.setTag(false);
             holder.currentOrderButton.setImageResource(R.drawable.ic_add_shopping_cart);
+        } else {
+            holder.currentOrderButton.setTag(true);
+            holder.currentOrderButton.setImageResource(R.drawable.ic_remove_shopping_cart);
         }
-        //Glide.with(mContext).load(mokaTorteLink).into(holder.productImage);
+        if (!mCursor.isNull(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)){
+
+            Glide.with(this.mContext).load(mCursor.getString(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)).into(holder.productImage);
+        }
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mICM.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mICM.onSaveInstanceState(outState);
+    }
+
+    public int getSelectedItemPosition() {
+        return mICM.getSelectedItemPosition();
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
+       // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return mCursor.length;
+        return mCursor!=null?mCursor.getCount():0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -71,32 +108,21 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            //mCursor.moveToPosition(adapterPosition);
-            // String id = mCursor.getString(mCursor.getColumnIndex(AlexandriaContract.BookEntry._ID));
-            //TODO: get product id
+            mCursor.moveToPosition(adapterPosition);
+            long id = mCursor.getLong(mCursor.getColumnIndex(DBContract.ProductEntry.COLUMN_PRODUCT_ID));
+            Log.d("adapter click", "product id " + String.valueOf(id));
             if (view instanceof ImageButton) {
-                mClickHandler.onToggleOrderItemClick(toggleOrderItem((ImageButton)view), 1);
+                Double price = mCursor.getDouble(mCursor.getColumnIndex((DBContract.ProductEntry.COLUMN_PRICE)));
+                mClickHandler.onToggleOrderItemClick((Boolean) view.getTag(), id, price);
             } else {
-                mClickHandler.onProductItemClick(1);
-                // mICM.onClick(this);
+                mClickHandler.onProductItemClick(id);
+                mICM.onClick(this);
             }
         }
     }
 
-    private boolean toggleOrderItem(ImageButton button){
-        boolean toggle = (boolean) button.getTag();
-        toggle = !toggle;
-        if (toggle) {
-            button.setImageResource(R.drawable.ic_remove_shopping_cart);
-        } else {
-            button.setImageResource(R.drawable.ic_add_shopping_cart);
-        }
-        button.setTag(toggle);
-        return toggle;
-    }
-
     public interface MenuListAdapterOnClickHandler {
         void onProductItemClick(long productId);
-        void onToggleOrderItemClick(boolean add, long productId);
+        void onToggleOrderItemClick(boolean added, long productId, double price);
     }
 }

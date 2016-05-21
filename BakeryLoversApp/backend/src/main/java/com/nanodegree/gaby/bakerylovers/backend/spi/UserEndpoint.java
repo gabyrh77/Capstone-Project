@@ -6,6 +6,7 @@
 
 package com.nanodegree.gaby.bakerylovers.backend.spi;
 
+import com.google.api.server.spi.config.Nullable;
 import com.nanodegree.gaby.bakerylovers.backend.db.UserRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -97,13 +98,12 @@ public class UserEndpoint {
      *
      * @param email The email from the google account
      * @param name The name to login
-     * @param token The name to login
-     * @param phone The name to login
+     * @param token The token to login
+     * @param phone The phone to login
      * @return The logged in user, or null of the login was not successful
      */
     @ApiMethod(name = "user.loginGoogle", httpMethod = ApiMethod.HttpMethod.POST)
-    public UserRecord loginGoogle(@Named("email") String email, @Named("name") String name,
-                                 @Named("token") String token, @Named("phone") String phone) {
+    public UserRecord loginGoogle(@Named("email") String email, @Named("name") String name, @Named("token") String token, @Nullable @Named("phone") String phone) {
         UserRecord user = findUserByEmail(email);
         if(user == null) {
             log.info("User " + email + " not registered, register as a google account");

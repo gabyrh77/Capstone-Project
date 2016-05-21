@@ -70,16 +70,23 @@ public class DBContract {
 
         //columns
         public static final String COLUMN_PRODUCT_ID = "product_id";
+        public static final String COLUMN_NAME = "product_name";
         public static final String COLUMN_DESCRIPTION = "product_desc";
         public static final String COLUMN_PRICE = "product_price";
         public static final String COLUMN_AVAILABLE = "product_available";
         public static final String COLUMN_NUTRITIONAL_VALUE = "product_nut_value";
         public static final String COLUMN_PHOTO_URL = "product_photo_url";
 
+        // join with current table
+        public static final String PRODUCT_CURRENT_JOIN = TABLE_NAME + " LEFT OUTER JOIN " + CurrentOrderEntry.TABLE_NAME +
+                " ON " + COLUMN_PRODUCT_ID + " = " + CurrentOrderEntry.COLUMN_PRODUCT_ID;
+        public static final String CURRENT_PATH = "current";
+
         //table create query
         public static final String SQL_CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY, " +
-                COLUMN_PRODUCT_ID + " INTEGER UNIQUE, " +
+                COLUMN_PRODUCT_ID + " INTEGER UNIQUE NOT NULL, " +
+                COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 COLUMN_PRICE + " REAL NOT NULL, " +
                 COLUMN_PHOTO_URL + " TEXT, " +
@@ -91,6 +98,7 @@ public class DBContract {
         public static final String[] DETAIL_COLUMNS = {
                 _ID,
                 COLUMN_PRODUCT_ID,
+                COLUMN_NAME,
                 COLUMN_DESCRIPTION,
                 COLUMN_PRICE,
                 COLUMN_PHOTO_URL,
@@ -98,12 +106,26 @@ public class DBContract {
                 COLUMN_AVAILABLE
         };
 
+        public static final String[] DETAIL_COLUMNS_WITH_CURRENT = {
+                TABLE_NAME+"."+_ID + " AS "+ _ID,
+                COLUMN_PRODUCT_ID,
+                COLUMN_NAME,
+                COLUMN_DESCRIPTION,
+                COLUMN_PRICE,
+                COLUMN_PHOTO_URL,
+                COLUMN_NUTRITIONAL_VALUE,
+                COLUMN_AVAILABLE,
+                CurrentOrderEntry.COLUMN_AMOUNT
+        };
+
         public static final int COLUMN_PRODUCT_ID_INDEX = 1;
-        public static final int COLUMN_DESCRIPTION_INDEX = 2;
-        public static final int COLUMN_PRICE_INDEX = 3;
-        public static final int COLUMN_PHOTO_URL_INDEX = 4;
-        public static final int COLUMN_NUTRITIONAL_VALUE_INDEX = 5;
-        public static final int COLUMN_AVAILABLE_INDEX = 6;
+        public static final int COLUMN_NAME_INDEX = 2;
+        public static final int COLUMN_DESCRIPTION_INDEX = 3;
+        public static final int COLUMN_PRICE_INDEX = 4;
+        public static final int COLUMN_PHOTO_URL_INDEX = 5;
+        public static final int COLUMN_NUTRITIONAL_VALUE_INDEX = 6;
+        public static final int COLUMN_AVAILABLE_INDEX = 7;
+        public static final int COLUMN_CURRENT_AMOUNT_INDEX = 8;
 
         //Uri
         public static final Uri CONTENT_URI =
@@ -116,6 +138,10 @@ public class DBContract {
 
         public static Uri buildProductUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildProductCurrentUri() {
+            return BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).appendPath(CURRENT_PATH).build();
         }
     }
 
@@ -134,13 +160,12 @@ public class DBContract {
         //table create query
         public static final String SQL_CREATE_ORDER_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY, " +
-                COLUMN_ORDER_ID + " INTEGER NOT NULL, " +
+                COLUMN_ORDER_ID + " INTEGER UNIQUE NOT NULL, " +
                 COLUMN_USER_ID + " INTEGER NOT NULL, " +
                 COLUMN_PLACED_DATE + " TEXT NOT NULL, " +
                 COLUMN_TOTAL_PRICE + " REAL NOT NULL, " +
                 COLUMN_TOTAL_DELIVERY + " REAL NOT NULL, " +
                 COLUMN_DELIVERED_DATE + " TEXT, " +
-                "CONSTRAINT 'unique_order_order_id' UNIQUE(" + COLUMN_ORDER_ID + "), " +
                 "CONSTRAINT 'fk_order_user_id' FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + "(" + UserEntry.COLUMN_USER_ID + ") ON DELETE CASCADE" +
                 ");";
 
@@ -243,7 +268,7 @@ public class DBContract {
         public static final String SQL_CREATE_CURRENT_ORDER_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_PRODUCT_ID + " INTEGER NOT NULL, " +
-                COLUMN_AMOUNT + " REAL NOT NULL, " +
+                COLUMN_AMOUNT + " INTEGER NOT NULL, " +
                 COLUMN_PRICE_UND + " REAL NOT NULL, " +
                 "CONSTRAINT 'fk_current_order_product' FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductEntry.TABLE_NAME + "(" + ProductEntry.COLUMN_PRODUCT_ID + "), " +
                 "CONSTRAINT 'unique_current_order_product' UNIQUE (" + COLUMN_PRODUCT_ID + ") ON CONFLICT REPLACE" +

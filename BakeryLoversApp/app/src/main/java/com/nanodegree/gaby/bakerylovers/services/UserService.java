@@ -18,9 +18,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class UserService {
-    public static final String TAG = "UserService";
+    private static final String TAG = "UserService";
     private Context mContext;
-    private static MyApi myApiService;
+    private MyApi myApiService;
     private SharedPreferences mSharedPrefLogin;
     private UserServiceListener mListener;
     @IntDef({USER_SERVICE_LOGIN, USER_SERVICE_LOGOUT, USER_SERVICE_REGISTER, USER_SERVICE_LOGIN_GOOGLE})
@@ -154,7 +154,7 @@ public class UserService {
                     break;
                 case USER_SERVICE_LOGIN_GOOGLE:
                     try {
-                        UserRecord user = myApiService.user().loginGoogle(params[0], params[1], params[2], params[3]).execute();
+                        UserRecord user = myApiService.user().loginGoogle(params[0], params[1], params[2]).setPhone(params[3]).execute();
                         if (user!=null) {
                             saveLoginPref(user);
                             return true;
