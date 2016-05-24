@@ -1,109 +1,102 @@
 package com.nanodegree.gaby.bakerylovers.fragments;
 
-import android.content.Context;
-import android.net.Uri;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.nanodegree.gaby.bakerylovers.R;
+import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
+import com.nanodegree.gaby.bakerylovers.data.DBContract;
+import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ReviewOrderFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ReviewOrderFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class ReviewOrderFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ReviewOrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    private static final String TAG = "ReviewOrderFragment";
+    private RecyclerView mRecyclerView;
+    private CurrentOrderAdapter mListAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public ReviewOrderFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ReviewOrderFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ReviewOrderFragment newInstance(String param1, String param2) {
-        ReviewOrderFragment fragment = new ReviewOrderFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public ReviewOrderFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView ");
+
+        // get products on the background
+        Intent productsIntent = new Intent(getActivity(), ProductsService.class);
+        productsIntent.setAction(ProductsService.ACTION_GET);
+        getActivity().startService(productsIntent);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_review_order, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_review_order, container, false);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_order_items);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        });
+
+        int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
+
+        // specify an adapter (see also next example)
+        mListAdapter = new CurrentOrderAdapter(getActivity(), null, choiceMode);
+        mRecyclerView.setAdapter(mListAdapter);
+
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated ");
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                DBContract.CurrentOrderEntry.CONTENT_URI,
+                DBContract.CurrentOrderEntry.DETAIL_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "loading current order items: " + String.valueOf(data.getCount()));
+        if (mListAdapter!=null) {
+            Log.d(TAG, "swapping cursor to adapter");
+            mListAdapter.swapCursor(data);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (mListAdapter!=null) {
+            mListAdapter.swapCursor(null);
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

@@ -28,25 +28,28 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.adapters.MenuListAdapter;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.fragments.MenuListFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.OrdersFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ProductDetailFragment;
+import com.nanodegree.gaby.bakerylovers.fragments.ReviewOrderFragment;
 import com.nanodegree.gaby.bakerylovers.services.CurrentOrderService;
 import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<Cursor>{
+        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
     private static final String TAG_FRAGMENT_LIST_MENU = "TAG_LIST_MENU";
     private static final String TAG_FRAGMENT_ORDERS = "TAG_ORDERS";
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
+    private static final String TAG_FRAGMENT_REVIEW_ORDER = "TAG_REVIEW_ORDER";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final int URL_LOADER = 0;
     private int mSelectedFragment;
@@ -65,13 +68,6 @@ public class MainActivity extends AppCompatActivity
         mUserService = new UserService(this, this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.main_coordinator_view);
         mReviewOrderButton = (FloatingActionButton) findViewById(R.id.review_order_button);
-        mReviewOrderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity
             mSelectedFragment = savedInstanceState.getInt(ARG_SELECTED_FRAGMENT);
         } else {
             mSelectedFragment = R.id.nav_main;
-
         }
 
         setFragment(mSelectedFragment, R.id.main_content, null);
@@ -150,6 +145,11 @@ public class MainActivity extends AppCompatActivity
                 titleId = R.string.title_fragment_product;
                 nextFragment = new ProductDetailFragment();
                 break;
+            case R.id.nav_review_order:
+                tag = TAG_FRAGMENT_REVIEW_ORDER;
+                titleId = R.string.title_fragment_review_order;
+                nextFragment = new ReviewOrderFragment();
+                break;
             case R.id.nav_main:
             default:
                 tag = TAG_FRAGMENT_LIST_MENU;
@@ -165,8 +165,13 @@ public class MainActivity extends AppCompatActivity
         mSelectedFragment = idFragment;
         setTitle(titleId);
 
-        FragmentManager fragmentManager = getFragmentManager();
+        if (mSelectedFragment == R.id.nav_main) {
+            mReviewOrderButton.setVisibility(View.VISIBLE);
+        } else {
+            mReviewOrderButton.setVisibility(View.GONE);
+        }
 
+        FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(container, nextFragment, tag)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -195,7 +200,6 @@ public class MainActivity extends AppCompatActivity
             openLoginActivity();
             finish();
         } else {
-
             View headerView = mNavigationView.getHeaderView(0);
             if (headerView!=null) {
                 TextView navNameText = (TextView) headerView.findViewById(R.id.nav_name_text);
@@ -207,7 +211,6 @@ public class MainActivity extends AppCompatActivity
                     navEmailText.setText(mUserService.getUserEmail());
                 }
             }
-
         }
     }
 
@@ -296,6 +299,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onAmountItemClick(long rowId) {
+        Snackbar.make(mCoordinatorView, "Open number picker", Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void reviewOrderClick(View view) {
+        setFragment(R.id.nav_review_order, R.id.main_content, null);
+    }
+
+    @Override
     public void onToggleOrderItemClick(boolean added, long productId, double price) {
         if (!added) {
             Toast.makeText(this, "Add to cart", Toast.LENGTH_SHORT).show();
@@ -332,7 +344,7 @@ public class MainActivity extends AppCompatActivity
                 if (mReviewOrderButton!=null && data!=null){
                     if (data.moveToFirst()){
                         int count = data.getInt(0);
-                        if (count>0) {
+                        if (count > 0 && mSelectedFragment == R.id.nav_main) {
                             mReviewOrderButton.setVisibility(View.VISIBLE);
                         } else {
                             mReviewOrderButton.setVisibility(View.GONE);

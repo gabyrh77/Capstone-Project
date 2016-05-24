@@ -3,6 +3,7 @@
     <string name="title_fragment_main">Browse Our Menu</string>
     <string name="title_fragment_product">Product Detail</string>
     <string name="title_fragment_order">Your Orders</string>
+    <string name="title_fragment_review_order">Your Cart</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

@@ -109,7 +109,7 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
-            long id = mCursor.getLong(mCursor.getColumnIndex(DBContract.ProductEntry.COLUMN_PRODUCT_ID));
+            long id = mCursor.getLong(DBContract.ProductEntry.COLUMN_PRODUCT_ID_INDEX);
             Log.d("adapter click", "product id " + String.valueOf(id));
             if (view instanceof ImageButton) {
                 Double price = mCursor.getDouble(mCursor.getColumnIndex((DBContract.ProductEntry.COLUMN_PRICE)));

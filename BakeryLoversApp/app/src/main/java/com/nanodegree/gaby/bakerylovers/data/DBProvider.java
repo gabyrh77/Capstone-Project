@@ -73,6 +73,8 @@ public class DBProvider extends ContentProvider {
                 mQueryBuilder.setTables(DBContract.OrderDetailEntry.TABLE_NAME);
                 break;
             case CURRENT_ORDER:
+                mQueryBuilder.setTables(DBContract.CurrentOrderEntry.CURRENT_PRODUCT_JOIN);
+                break;
             case CURRENT_DETAIL:
                 mQueryBuilder.setTables(DBContract.CurrentOrderEntry.TABLE_NAME);
                 break;

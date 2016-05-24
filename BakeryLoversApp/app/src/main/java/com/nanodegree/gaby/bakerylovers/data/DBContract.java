@@ -264,6 +264,11 @@ public class DBContract {
         public static final String COLUMN_AMOUNT = "current_amount";
         public static final String COLUMN_PRICE_UND = "current_price_und";
 
+        // join with product table
+        public static final String CURRENT_PRODUCT_JOIN = TABLE_NAME + " INNER JOIN " + ProductEntry.TABLE_NAME +
+                " ON " + COLUMN_PRODUCT_ID + " = " + ProductEntry.COLUMN_PRODUCT_ID;
+        public static final String CURRENT_PATH = "current";
+
         //table create query
         public static final String SQL_CREATE_CURRENT_ORDER_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY, " +
@@ -276,15 +281,19 @@ public class DBContract {
 
         //Cursors
         public static final String[] DETAIL_COLUMNS = {
-                _ID,
+                TABLE_NAME+"."+_ID + " AS "+ _ID,
                 COLUMN_PRODUCT_ID,
+                ProductEntry.COLUMN_NAME,
+                ProductEntry.COLUMN_PHOTO_URL,
                 COLUMN_AMOUNT,
                 COLUMN_PRICE_UND
         };
 
         public static final int COLUMN_PRODUCT_ID_INDEX = 1;
-        public static final int COLUMN_AMOUNT_INDEX = 2;
-        public static final int COLUMN_PRICE_UND_INDEX = 3;
+        public static final int COLUMN_PRODUCT_NAME_INDEX = 2;
+        public static final int COLUMN_PRODUCT_PHOTO_URL_INDEX = 3;
+        public static final int COLUMN_AMOUNT_INDEX = 4;
+        public static final int COLUMN_PRICE_UND_INDEX = 5;
 
         //Uri
         public static final Uri CONTENT_URI =
