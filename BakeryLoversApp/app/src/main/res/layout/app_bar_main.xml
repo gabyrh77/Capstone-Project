@@ -26,16 +26,5 @@
     <FrameLayout android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?android:attr/actionBarSize"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/review_order_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:onClick="reviewOrderClick"
-        android:src="@drawable/ic_action_shop"
-        android:contentDescription="@string/action_review_order"/>
-
+        android:layout_marginTop="?android:attr/actionBarSize" />
 </android.support.design.widget.CoordinatorLayout>

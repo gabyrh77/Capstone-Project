@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +25,7 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
     private static final String TAG = "MenuListFragment";
     private RecyclerView mRecyclerView;
     private MenuListAdapter mListAdapter;
+    private FloatingActionButton mReviewOrderButton;
 
     public MenuListFragment() {}
 
@@ -39,6 +41,7 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_menu_list, container, false);
+        mReviewOrderButton = (FloatingActionButton) rootView.findViewById(R.id.review_order_button);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_menu_view);
 
         // use this setting to improve performance if you know that changes
@@ -95,6 +98,16 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
         if (mListAdapter!=null) {
             Log.d(TAG, "swapping cursor to adapter");
             mListAdapter.swapCursor(data);
+
+            if (data.moveToFirst()){
+                int count = data.getInt(0);
+                if (count > 0) {
+                    mReviewOrderButton.setVisibility(View.VISIBLE);
+                } else {
+                    mReviewOrderButton.setVisibility(View.GONE);
+                }
+            }
+
         }
     }
 

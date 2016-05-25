@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -86,15 +86,16 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         public final ImageView productImage;
         public final TextView productName;
         public final TextView productPrice;
-        public final Button amountButton;
+        public final EditText amountEdit;
 
         public ViewHolder(View view) {
             super(view);
             productImage = (ImageView) view.findViewById(R.id.item_current_image);
             productName = (TextView) view.findViewById(R.id.item_current_name_text);
             productPrice = (TextView) view.findViewById(R.id.item_current_price_text);
-            amountButton = (Button) view.findViewById(R.id.item_current_amount_text);
-            amountButton.setOnClickListener(this);
+            amountEdit = (EditText) view.findViewById(R.id.item_current_amount_text);
+            amountEdit.setClickable(true);
+            amountEdit.setOnClickListener(this);
             view.setOnClickListener(this);
         }
 
@@ -104,7 +105,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
             mCursor.moveToPosition(adapterPosition);
             long id = mCursor.getLong(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID_INDEX);
             Log.d("C. order adapter click", "product id " + String.valueOf(id));
-            if (view instanceof Button) {
+            if (view instanceof EditText) {
                 mClickHandler.onAmountItemClick(mCursor.getLong(0));
                 //TODO: OPEN NUMBER PICKER
             } else {

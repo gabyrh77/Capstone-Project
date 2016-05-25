@@ -42,7 +42,7 @@ import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler,
-        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor>{
+        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler{
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity
     private UserService mUserService;
     private NavigationView mNavigationView;
     private CoordinatorLayout mCoordinatorView;
-    private FloatingActionButton mReviewOrderButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity
 
         mUserService = new UserService(this, this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.main_coordinator_view);
-        mReviewOrderButton = (FloatingActionButton) findViewById(R.id.review_order_button);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -86,9 +84,6 @@ public class MainActivity extends AppCompatActivity
 
         setFragment(mSelectedFragment, R.id.main_content, null);
         mNavigationView.setCheckedItem(mSelectedFragment);
-
-        // cursor loader
-        getLoaderManager().initLoader(URL_LOADER, null, this);
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -164,12 +159,6 @@ public class MainActivity extends AppCompatActivity
 
         mSelectedFragment = idFragment;
         setTitle(titleId);
-
-        if (mSelectedFragment == R.id.nav_main) {
-            mReviewOrderButton.setVisibility(View.VISIBLE);
-        } else {
-            mReviewOrderButton.setVisibility(View.GONE);
-        }
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
@@ -323,40 +312,5 @@ public class MainActivity extends AppCompatActivity
             bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
             startService(bookIntent);
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case URL_LOADER:
-                return new CursorLoader(MainActivity.this,
-                        DBContract.CurrentOrderEntry.CONTENT_URI, new String[] {"count(*)"},
-                        null, null, null);
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case URL_LOADER:
-                if (mReviewOrderButton!=null && data!=null){
-                    if (data.moveToFirst()){
-                        int count = data.getInt(0);
-                        if (count > 0 && mSelectedFragment == R.id.nav_main) {
-                            mReviewOrderButton.setVisibility(View.VISIBLE);
-                        } else {
-                            mReviewOrderButton.setVisibility(View.GONE);
-                        }
-                    }
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
