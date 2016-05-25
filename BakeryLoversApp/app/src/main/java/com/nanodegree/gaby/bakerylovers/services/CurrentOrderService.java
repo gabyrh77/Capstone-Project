@@ -3,8 +3,6 @@ package com.nanodegree.gaby.bakerylovers.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
@@ -12,9 +10,11 @@ import com.nanodegree.gaby.bakerylovers.data.DBContract;
 public class CurrentOrderService extends IntentService{
     private static final String TAG = "CurrentOrderService";
     public static final String ACTION_ADD = "com.nanodegree.gaby.bakerylovers.services.action.ADD_TO_ORDER";
+    public static final String ACTION_UPDATE = "com.nanodegree.gaby.bakerylovers.services.action.UPDATE_ORDER";
     public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE_FROM_ORDER";
     public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID_ORDER";
     public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
+    public static final String PRODUCT_AMOUNT = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_AMOUNT_ORDER";
     public CurrentOrderService() {
         super(TAG);
     }
@@ -27,7 +27,9 @@ public class CurrentOrderService extends IntentService{
             if (productId > 0) {
                 if (ACTION_ADD.equals(action)) {
                     addToOrder(productId, intent.getDoubleExtra(PRODUCT_PRICE, 0));
-                } else if (ACTION_DELETE.equals(action)) {
+                } else  if (ACTION_UPDATE.equals(action)) {
+                    updateProductOrder(productId, intent.getIntExtra(PRODUCT_AMOUNT, 1));
+                }else if (ACTION_DELETE.equals(action)) {
                     deleteFromOrder(productId);
                 }
             }
@@ -57,9 +59,8 @@ public class CurrentOrderService extends IntentService{
     private void updateProductOrder(long id, int amount){
         try {
             ContentValues values = new ContentValues();
-            values.put(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID, id);
             values.put(DBContract.CurrentOrderEntry.COLUMN_AMOUNT, amount);
-            getContentResolver().update(DBContract.CurrentOrderEntry.CONTENT_URI, values, DBContract.CurrentOrderEntry._ID + " = ?", new String[] {String.valueOf(id)});
+            getContentResolver().update(DBContract.CurrentOrderEntry.CONTENT_URI, values, DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ?", new String[] {String.valueOf(id)});
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }

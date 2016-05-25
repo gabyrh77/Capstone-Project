@@ -1,16 +1,12 @@
 package com.nanodegree.gaby.bakerylovers.activities;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -31,18 +27,18 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.adapters.MenuListAdapter;
 import com.nanodegree.gaby.bakerylovers.R;
-import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.fragments.MenuListFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.OrdersFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ProductDetailFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ReviewOrderFragment;
+import com.nanodegree.gaby.bakerylovers.fragments.UpdateAmountDialogFragment;
 import com.nanodegree.gaby.bakerylovers.services.CurrentOrderService;
 import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler,
-        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler{
+        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler, UpdateAmountDialogFragment.UpdateAmountDialogListener{
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
@@ -50,8 +46,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_FRAGMENT_ORDERS = "TAG_ORDERS";
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
     private static final String TAG_FRAGMENT_REVIEW_ORDER = "TAG_REVIEW_ORDER";
+    private static final String TAG_DIALOG_AMOUNT_ORDER = "TAG_DIALOG_ORDER_AMOUNT";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final int URL_LOADER = 0;
     private int mSelectedFragment;
     private UserService mUserService;
     private NavigationView mNavigationView;
@@ -288,8 +284,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAmountItemClick(long rowId) {
-        Snackbar.make(mCoordinatorView, "Open number picker", Snackbar.LENGTH_SHORT).show();
+    public void onAmountItemClick(long productId, int amount) {
+        DialogFragment newFragment = UpdateAmountDialogFragment.newInstance(productId, amount);
+        newFragment.show(getFragmentManager(), TAG_DIALOG_AMOUNT_ORDER);
     }
 
     public void reviewOrderClick(View view) {
@@ -312,5 +309,14 @@ public class MainActivity extends AppCompatActivity
             bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
             startService(bookIntent);
         }
+    }
+
+    @Override
+    public void onUpdateAmountClick(long productId, int amount) {
+        Intent bookIntent = new Intent(this, CurrentOrderService.class);
+        bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
+        bookIntent.putExtra(CurrentOrderService.PRODUCT_AMOUNT, amount);
+        bookIntent.setAction(CurrentOrderService.ACTION_UPDATE);
+        startService(bookIntent);
     }
 }

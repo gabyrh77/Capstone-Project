@@ -233,31 +233,25 @@ public class DBProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
-        selectionArgs = new String[] {uri.getLastPathSegment()};
 
         switch (match) {
-            case USER:
-                selection = DBContract.UserEntry._ID + " = ? ";
+            case USERS:
                 rowsUpdated = db.update(DBContract.UserEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
-            case ORDER:
-                selection = DBContract.OrderEntry._ID + " = ? ";
+            case ORDERS:
                 rowsUpdated = db.update(DBContract.OrderEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
-            case PRODUCT:
-                selection = DBContract.ProductEntry._ID + " = ? ";
+            case PRODUCTS:
                 rowsUpdated = db.update(DBContract.ProductEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
-            case ORDER_DETAIL:
-                selection = DBContract.OrderDetailEntry._ID + " = ? ";
+            case ORDER_DETAILS:
                 rowsUpdated = db.update(DBContract.OrderDetailEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
-            case CURRENT_DETAIL:
-                selection = DBContract.CurrentOrderEntry._ID + " = ? ";
+            case CURRENT_ORDER:
                 rowsUpdated = db.update(DBContract.CurrentOrderEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
@@ -297,7 +291,7 @@ public class DBProvider extends ContentProvider {
                 tableName = DBContract.OrderDetailEntry.TABLE_NAME;
                 // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
                 break;
-            case CURRENT_DETAIL:
+            case CURRENT_ORDER:
                 tableName = DBContract.CurrentOrderEntry.TABLE_NAME;
                 // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
                 break;

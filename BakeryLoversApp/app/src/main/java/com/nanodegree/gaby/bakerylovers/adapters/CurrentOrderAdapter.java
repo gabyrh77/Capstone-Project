@@ -52,7 +52,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         mCursor.moveToPosition(position);
         holder.productName.setText(mCursor.getString(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_NAME_INDEX));
         holder.productPrice.setText(mCurrencyFormat.format(mCursor.getDouble(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND_INDEX)));
-        Log.d("adapter position: ", String.valueOf(position));
+        holder.amountEdit.setText(String.valueOf(mCursor.getInt(DBContract.CurrentOrderEntry.COLUMN_AMOUNT_INDEX)));
 
         if (!mCursor.isNull(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)){
             Glide.with(this.mContext).load(mCursor.getString(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_PHOTO_URL_INDEX)).into(holder.productImage);
@@ -104,10 +104,9 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
             long id = mCursor.getLong(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID_INDEX);
-            Log.d("C. order adapter click", "product id " + String.valueOf(id));
             if (view instanceof EditText) {
-                mClickHandler.onAmountItemClick(mCursor.getLong(0));
-                //TODO: OPEN NUMBER PICKER
+                int amount = mCursor.getInt(DBContract.CurrentOrderEntry.COLUMN_AMOUNT_INDEX);
+                mClickHandler.onAmountItemClick(id, amount);
             } else {
                 mClickHandler.onProductItemClick(id);
                 mICM.onClick(this);
@@ -117,6 +116,6 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
 
     public interface CurrentOrderAdapterOnClickHandler {
         void onProductItemClick(long productId);
-        void onAmountItemClick(long rowId);
+        void onAmountItemClick(long productId, int amount);
     }
 }

@@ -4,6 +4,7 @@
     <string name="title_fragment_product">Product Detail</string>
     <string name="title_fragment_order">Your Orders</string>
     <string name="title_fragment_review_order">Your Cart</string>
+    <string name="title_update_amount_order">How Many?</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -30,7 +31,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_profile_photo_desc">Profile photo</string>
+
+
+    <!-- string related to actions -->
+    <string name="action_cancel">Cancel</string>
     <string name="action_settings">Settings</string>
+    <string name="action_update">Update</string>
 
     <!-- string related to preferences -->
     <string name="preference_session_file_key" translatable="false">com.nanodegree.gaby.bakerylovers.PREFERENCE_SESSION_FILE_KEY</string>

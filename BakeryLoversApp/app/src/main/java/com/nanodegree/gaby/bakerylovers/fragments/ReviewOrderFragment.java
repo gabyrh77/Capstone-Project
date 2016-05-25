@@ -86,16 +86,14 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "loading current order items: " + String.valueOf(data.getCount()));
-        if (mListAdapter!=null) {
-            Log.d(TAG, "swapping cursor to adapter");
+        if (mListAdapter != null) {
             mListAdapter.swapCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mListAdapter!=null) {
+        if (mListAdapter != null) {
             mListAdapter.swapCursor(null);
         }
     }
