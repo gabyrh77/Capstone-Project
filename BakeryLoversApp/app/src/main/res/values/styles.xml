@@ -21,7 +21,21 @@
 
     <style name="Title" parent="TextAppearance.AppCompat.Large" />
 
+    <style name="BodyText" parent="TextAppearance.AppCompat.Medium" />
+
     <style name="Title.Gray" parent="Title">
+        <item name="android:textColor">@color/textGray</item>
+    </style>
+
+    <style name="Title.DarkGray" parent="Title">
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="BodyText.DarkGray" parent="BodyText">
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="BodyText.Gray" parent="BodyText">
         <item name="android:textColor">@color/textGray</item>
     </style>
 

@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProductItemClick(long productId) {
-        Bundle args = ProductDetailFragment.newBundleInstance(productId);
+        Bundle args = ProductDetailFragment.newInstance(productId);
         int id = R.id.main_content;
       /*  if(findViewById(R.id.main_detail_content) != null){
             id = R.id.main_detail_content;

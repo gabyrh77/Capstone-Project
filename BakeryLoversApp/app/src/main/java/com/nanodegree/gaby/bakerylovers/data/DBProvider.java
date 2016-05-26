@@ -52,17 +52,27 @@ public class DBProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
-        switch (sUriMatcher.match(uri)) {
+        int matcher = sUriMatcher.match(uri);
+        switch (matcher) {
             case USERS:
             case USER:
+                if (matcher == USER && selection==null) {
+                    selection = DBContract.UserEntry.COLUMN_USER_ID + " = "+ uri.getLastPathSegment();
+                }
                 mQueryBuilder.setTables(DBContract.UserEntry.TABLE_NAME);
                 break;
             case ORDERS:
             case ORDER:
+                if (matcher == ORDER && selection==null) {
+                    selection = DBContract.OrderEntry.COLUMN_ORDER_ID + " = "+ uri.getLastPathSegment();
+                }
                 mQueryBuilder.setTables(DBContract.OrderEntry.TABLE_NAME);
                 break;
             case PRODUCTS:
             case PRODUCT:
+                if (matcher == PRODUCT && selection==null) {
+                    selection = DBContract.ProductEntry.COLUMN_PRODUCT_ID + " = "+ uri.getLastPathSegment();
+                }
                 mQueryBuilder.setTables(DBContract.ProductEntry.TABLE_NAME);
                 break;
             case PRODUCTS_CURRENT_ORDER:

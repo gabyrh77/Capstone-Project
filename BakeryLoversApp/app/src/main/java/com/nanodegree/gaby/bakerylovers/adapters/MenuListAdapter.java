@@ -15,9 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
-
-import java.text.NumberFormat;
-import java.util.Locale;
+import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
 public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHolder>{
     private Cursor mCursor;
@@ -25,7 +23,6 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
     final private Activity mContext;
     final private MenuListAdapterOnClickHandler mClickHandler;
     final private ItemChoiceManager mICM;
-    private NumberFormat mCurrencyFormat;
 
     public MenuListAdapter(Activity context, View emptyView, int choiceMode) {
         super();
@@ -34,7 +31,6 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
         mClickHandler = (MenuListAdapterOnClickHandler) mContext;
         mICM = new ItemChoiceManager(this);
         mICM.setChoiceMode(choiceMode);
-        mCurrencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
     }
 
     @Override
@@ -51,8 +47,8 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         holder.productName.setText(mCursor.getString(DBContract.ProductEntry.COLUMN_NAME_INDEX));
-        holder.productPrice.setText(mCurrencyFormat.format(mCursor.getDouble(DBContract.ProductEntry.COLUMN_PRICE_INDEX)));
-        Log.d("adapter position: ", String.valueOf(position));
+        holder.productPrice.setText(Utils.getCurrencyFormatted(mCursor.getDouble(DBContract.ProductEntry.COLUMN_PRICE_INDEX)));
+        //TODO: HANDLE PRODUCT AVAILABILITY
         if (mCursor.isNull(DBContract.ProductEntry.COLUMN_CURRENT_AMOUNT_INDEX)){
             holder.currentOrderButton.setTag(false);
             holder.currentOrderButton.setImageResource(R.drawable.ic_add_shopping_cart);
@@ -61,8 +57,10 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
             holder.currentOrderButton.setImageResource(R.drawable.ic_remove_shopping_cart);
         }
         if (!mCursor.isNull(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)){
-
-            Glide.with(this.mContext).load(mCursor.getString(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)).into(holder.productImage);
+            Glide.with(this.mContext)
+                    .load(mCursor.getString(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX))
+                    .placeholder(R.drawable.no_image)
+                    .into(holder.productImage);
         }
     }
 
@@ -110,7 +108,6 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
             long id = mCursor.getLong(DBContract.ProductEntry.COLUMN_PRODUCT_ID_INDEX);
-            Log.d("adapter click", "product id " + String.valueOf(id));
             if (view instanceof ImageButton) {
                 Double price = mCursor.getDouble(mCursor.getColumnIndex((DBContract.ProductEntry.COLUMN_PRICE)));
                 mClickHandler.onToggleOrderItemClick((Boolean) view.getTag(), id, price);

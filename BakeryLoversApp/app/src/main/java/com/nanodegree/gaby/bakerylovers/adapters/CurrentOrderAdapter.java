@@ -15,9 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
-
-import java.text.NumberFormat;
-import java.util.Locale;
+import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
 public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapter.ViewHolder>{
     private Cursor mCursor;
@@ -25,7 +23,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
     final private Activity mContext;
     final private CurrentOrderAdapterOnClickHandler mClickHandler;
     final private ItemChoiceManager mICM;
-    private NumberFormat mCurrencyFormat;
+
 
     public CurrentOrderAdapter(Activity context, View emptyView, int choiceMode) {
         super();
@@ -34,7 +32,6 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         mClickHandler = (CurrentOrderAdapterOnClickHandler) mContext;
         mICM = new ItemChoiceManager(this);
         mICM.setChoiceMode(choiceMode);
-        mCurrencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
     }
 
     @Override
@@ -51,11 +48,14 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         holder.productName.setText(mCursor.getString(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_NAME_INDEX));
-        holder.productPrice.setText(mCurrencyFormat.format(mCursor.getDouble(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND_INDEX)));
+        holder.productPrice.setText(Utils.getCurrencyFormatted(mCursor.getDouble(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND_INDEX)));
         holder.amountEdit.setText(String.valueOf(mCursor.getInt(DBContract.CurrentOrderEntry.COLUMN_AMOUNT_INDEX)));
 
         if (!mCursor.isNull(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)){
-            Glide.with(this.mContext).load(mCursor.getString(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_PHOTO_URL_INDEX)).into(holder.productImage);
+            Glide.with(this.mContext)
+                    .load(mCursor.getString(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_PHOTO_URL_INDEX))
+                    .placeholder(R.drawable.no_image)
+                    .into(holder.productImage);
         }
     }
 
