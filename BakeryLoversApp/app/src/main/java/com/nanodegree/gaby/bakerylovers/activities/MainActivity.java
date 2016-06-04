@@ -66,20 +66,20 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        if(savedInstanceState!=null) {
+        if(savedInstanceState != null) {
             mSelectedFragment = savedInstanceState.getInt(ARG_SELECTED_FRAGMENT);
+            mNavigationView.setCheckedItem(mSelectedFragment);
         } else {
-            mSelectedFragment = R.id.nav_main;
+            mSelectedFragment = 0;
+            setFragment(R.id.nav_main, R.id.main_content, null);
+            mNavigationView.setCheckedItem(R.id.nav_main);
         }
-
-        setFragment(mSelectedFragment, R.id.main_content, null);
-        mNavigationView.setCheckedItem(mSelectedFragment);
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -153,15 +153,22 @@ public class MainActivity extends AppCompatActivity
             nextFragment.setArguments(args);
         }
 
-        mSelectedFragment = idFragment;
         setTitle(titleId);
-
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(container, nextFragment, tag)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack(tag)
-                .commit();
+
+        if (mSelectedFragment== 0) {
+            fragmentManager.beginTransaction()
+                    .add(container, nextFragment, tag)
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(container, nextFragment, tag)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(tag)
+                    .commit();
+        }
+
+        mSelectedFragment = idFragment;
     }
 
     @Override
@@ -275,18 +282,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProductItemClick(long productId) {
         Bundle args = ProductDetailFragment.newInstance(productId);
-        int id = R.id.main_content;
-      /*  if(findViewById(R.id.main_detail_content) != null){
+
+       /* if(findViewById(R.id.main_detail_content) != null){
             id = R.id.main_detail_content;
+            setFragment(R.id.nav_product_detail, id, args);
         }*/
 
-        setFragment(R.id.nav_product_detail, id, args);
+       Intent productDetail = new Intent(MainActivity.this, ProductDetailActivity.class);
+       productDetail.putExtras(args);
+       startActivity(productDetail);
     }
 
     @Override
     public void onAmountItemClick(long productId, int amount) {
         DialogFragment newFragment = UpdateAmountDialogFragment.newInstance(productId, amount);
         newFragment.show(getFragmentManager(), TAG_DIALOG_AMOUNT_ORDER);
+    }
+
+    @Override
+    public void onDeleteProductClick(long productId) {
+        Log.d(TAG, "Remove from cart the item: " + String.valueOf(productId));
+        Intent bookIntent = new Intent(this, CurrentOrderService.class);
+        bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
+        bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
+        startService(bookIntent);
     }
 
     public void reviewOrderClick(View view) {
@@ -296,19 +315,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onToggleOrderItemClick(boolean added, long productId, double price) {
         if (!added) {
-            Toast.makeText(this, "Add to cart", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Add to cart the item: " + String.valueOf(productId));
             Intent bookIntent = new Intent(this, CurrentOrderService.class);
             bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
             bookIntent.putExtra(CurrentOrderService.PRODUCT_PRICE, price);
             bookIntent.setAction(CurrentOrderService.ACTION_ADD);
             startService(bookIntent);
-        } else {
-            Toast.makeText(this, "Remove from cart", Toast.LENGTH_SHORT).show();
-            Intent bookIntent = new Intent(this, CurrentOrderService.class);
-            bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
-            bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
-            startService(bookIntent);
         }
+        Snackbar.make(mCoordinatorView, "This item was added to your cart", Snackbar.LENGTH_LONG);
     }
 
     @Override

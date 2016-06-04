@@ -37,6 +37,11 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".activities.ProductDetailActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
+
         <!-- DB content provider -->
         <provider
             android:name=".data.DBProvider"

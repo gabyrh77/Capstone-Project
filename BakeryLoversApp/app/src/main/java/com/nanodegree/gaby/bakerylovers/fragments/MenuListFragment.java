@@ -23,6 +23,8 @@ import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 
 public class MenuListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String TAG = "MenuListFragment";
+    private static final int LOADER_PRODUCTS = 0;
+    private static final int LOADER_CART = 1;
     private RecyclerView mRecyclerView;
     private MenuListAdapter mListAdapter;
     private FloatingActionButton mReviewOrderButton;
@@ -66,7 +68,8 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated ");
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(LOADER_PRODUCTS, null, this);
+        getLoaderManager().initLoader(LOADER_CART, null, this);
     }
 
     @Override
@@ -84,37 +87,58 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(),
-                DBContract.ProductEntry.buildProductCurrentUri(),
-                DBContract.ProductEntry.DETAIL_COLUMNS_WITH_CURRENT,
-                null,
-                null,
-                null);
+        switch (id) {
+            case LOADER_PRODUCTS:
+                return new CursorLoader(getActivity(),
+                        DBContract.ProductEntry.buildProductCurrentUri(),
+                        DBContract.ProductEntry.DETAIL_COLUMNS_WITH_CURRENT,
+                        null,
+                        null,
+                        null);
+            case LOADER_CART:
+                return new CursorLoader(getActivity(),
+                        DBContract.CurrentOrderEntry.CONTENT_URI,
+                        new String[] {"count(*)"},
+                        null,
+                        null,
+                        null);
+        }
+        return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "loading items: " + String.valueOf(data.getCount()));
-        if (mListAdapter!=null) {
-            Log.d(TAG, "swapping cursor to adapter");
-            mListAdapter.swapCursor(data);
-
-            if (data.moveToFirst()){
-                int count = data.getInt(0);
-                if (count > 0) {
-                    mReviewOrderButton.setVisibility(View.VISIBLE);
-                } else {
-                    mReviewOrderButton.setVisibility(View.GONE);
+        switch (loader.getId()) {
+            case LOADER_PRODUCTS:
+                Log.d(TAG, "loading items: " + String.valueOf(data.getCount()));
+                if (mListAdapter!=null) {
+                    Log.d(TAG, "swapping cursor to adapter");
+                    mListAdapter.swapCursor(data);
                 }
-            }
-
+                break;
+            case LOADER_CART:
+                if (data.moveToFirst() && mReviewOrderButton != null){
+                    int count = data.getInt(0);
+                    Log.d(TAG, "current items: " + String.valueOf(count));
+                    if (count > 0) {
+                        mReviewOrderButton.setVisibility(View.VISIBLE);
+                    } else {
+                        mReviewOrderButton.setVisibility(View.GONE);
+                    }
+                }
+                break;
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mListAdapter!=null) {
-            mListAdapter.swapCursor(null);
+        switch (loader.getId()) {
+            case LOADER_PRODUCTS:
+                if (mListAdapter != null) {
+                    mListAdapter.swapCursor(null);
+                }
+                break;
         }
     }
 }

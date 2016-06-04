@@ -104,10 +104,12 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
             long id = mCursor.getLong(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID_INDEX);
-            if (view instanceof EditText) {
+            if (view.getId() == R.id.item_current_amount_text) {
                 int amount = mCursor.getInt(DBContract.CurrentOrderEntry.COLUMN_AMOUNT_INDEX);
                 mClickHandler.onAmountItemClick(id, amount);
-            } else {
+            } else if (view.getId() == R.id.remove_button) {
+                mClickHandler.onDeleteProductClick(id);
+            }else {
                 mClickHandler.onProductItemClick(id);
                 mICM.onClick(this);
             }
@@ -117,5 +119,6 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
     public interface CurrentOrderAdapterOnClickHandler {
         void onProductItemClick(long productId);
         void onAmountItemClick(long productId, int amount);
+        void onDeleteProductClick(long productId);
     }
 }
