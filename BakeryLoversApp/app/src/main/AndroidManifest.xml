@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nanodegree.gaby.bakerylovers" >
+    package="com.nanodegree.gaby.bakerylovers">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -22,10 +22,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.White" >
+        android:theme="@style/AppTheme.White">
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,10 +36,13 @@
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".activities.ProductDetailActivity"
             android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ReviewOrderActivity"
+            android:label="@string/title_fragment_review_order"
             android:theme="@style/AppTheme" />
 
         <!-- DB content provider -->
@@ -53,20 +56,25 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <!-- GCM services -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.nanodegree.gaby.bakerylovers" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".services.GCMListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
@@ -80,12 +88,16 @@
         </service>
         <service
             android:name=".services.GCMRegistrationService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
 
         <!-- my services -->
-        <service android:name=".services.CurrentOrderService"  android:exported="false"/>
-        <service android:name=".services.ProductsService"  android:exported="false"/>
+        <service
+            android:name=".services.CurrentOrderService"
+            android:exported="false" />
+        <service
+            android:name=".services.ProductsService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

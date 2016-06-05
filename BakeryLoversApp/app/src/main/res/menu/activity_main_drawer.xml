@@ -11,7 +11,6 @@
             android:icon="@drawable/ic_menu_orders"
             android:title="Your Orders" />
         <item android:id="@+id/nav_product_detail" android:visible="false" />
-        <item android:id="@+id/nav_review_order" android:visible="false" />
     </group>
 
     <item android:title="Account">

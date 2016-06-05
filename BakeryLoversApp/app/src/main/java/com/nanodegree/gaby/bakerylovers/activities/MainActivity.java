@@ -1,6 +1,5 @@
 package com.nanodegree.gaby.bakerylovers.activities;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -20,32 +19,26 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.adapters.MenuListAdapter;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.fragments.MenuListFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.OrdersFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ProductDetailFragment;
-import com.nanodegree.gaby.bakerylovers.fragments.ReviewOrderFragment;
-import com.nanodegree.gaby.bakerylovers.fragments.UpdateAmountDialogFragment;
 import com.nanodegree.gaby.bakerylovers.services.CurrentOrderService;
 import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler,
-        CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler, UpdateAmountDialogFragment.UpdateAmountDialogListener{
+        implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler {
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
     private static final String TAG_FRAGMENT_LIST_MENU = "TAG_LIST_MENU";
     private static final String TAG_FRAGMENT_ORDERS = "TAG_ORDERS";
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
-    private static final String TAG_FRAGMENT_REVIEW_ORDER = "TAG_REVIEW_ORDER";
     private static final String TAG_DIALOG_AMOUNT_ORDER = "TAG_DIALOG_ORDER_AMOUNT";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private int mSelectedFragment;
@@ -136,11 +129,6 @@ public class MainActivity extends AppCompatActivity
                 titleId = R.string.title_fragment_product;
                 nextFragment = new ProductDetailFragment();
                 break;
-            case R.id.nav_review_order:
-                tag = TAG_FRAGMENT_REVIEW_ORDER;
-                titleId = R.string.title_fragment_review_order;
-                nextFragment = new ReviewOrderFragment();
-                break;
             case R.id.nav_main:
             default:
                 tag = TAG_FRAGMENT_LIST_MENU;
@@ -213,28 +201,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -288,28 +254,13 @@ public class MainActivity extends AppCompatActivity
             setFragment(R.id.nav_product_detail, id, args);
         }*/
 
-       Intent productDetail = new Intent(MainActivity.this, ProductDetailActivity.class);
+       Intent productDetail = new Intent(this, ProductDetailActivity.class);
        productDetail.putExtras(args);
        startActivity(productDetail);
     }
 
-    @Override
-    public void onAmountItemClick(long productId, int amount) {
-        DialogFragment newFragment = UpdateAmountDialogFragment.newInstance(productId, amount);
-        newFragment.show(getFragmentManager(), TAG_DIALOG_AMOUNT_ORDER);
-    }
-
-    @Override
-    public void onDeleteProductClick(long productId) {
-        Log.d(TAG, "Remove from cart the item: " + String.valueOf(productId));
-        Intent bookIntent = new Intent(this, CurrentOrderService.class);
-        bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
-        bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
-        startService(bookIntent);
-    }
-
     public void reviewOrderClick(View view) {
-        setFragment(R.id.nav_review_order, R.id.main_content, null);
+        startActivity(new Intent(this, ReviewOrderActivity.class));
     }
 
     @Override
@@ -323,14 +274,5 @@ public class MainActivity extends AppCompatActivity
             startService(bookIntent);
         }
         Snackbar.make(mCoordinatorView, "This item was added to your cart", Snackbar.LENGTH_LONG);
-    }
-
-    @Override
-    public void onUpdateAmountClick(long productId, int amount) {
-        Intent bookIntent = new Intent(this, CurrentOrderService.class);
-        bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
-        bookIntent.putExtra(CurrentOrderService.PRODUCT_AMOUNT, amount);
-        bookIntent.setAction(CurrentOrderService.ACTION_UPDATE);
-        startService(bookIntent);
     }
 }
