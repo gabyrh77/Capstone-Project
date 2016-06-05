@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,6 +88,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         public final TextView productName;
         public final TextView productPrice;
         public final EditText amountEdit;
+        public final Button removeButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -94,8 +96,10 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
             productName = (TextView) view.findViewById(R.id.item_current_name_text);
             productPrice = (TextView) view.findViewById(R.id.item_current_price_text);
             amountEdit = (EditText) view.findViewById(R.id.item_current_amount_text);
+            removeButton = (Button) view.findViewById(R.id.remove_button);
             amountEdit.setClickable(true);
             amountEdit.setOnClickListener(this);
+            removeButton.setOnClickListener(this);
             view.setOnClickListener(this);
         }
 

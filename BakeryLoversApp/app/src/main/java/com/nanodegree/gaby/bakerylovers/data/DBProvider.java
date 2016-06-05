@@ -14,17 +14,17 @@ public class DBProvider extends ContentProvider {
     private static UriMatcher sUriMatcher = buildUriMatcher();
     private DBHelper mOpenHelper;
     private SQLiteQueryBuilder mQueryBuilder;
-    static final int USERS = 100;
-    static final int USER = 101;
-    static final int ORDERS = 200;
-    static final int ORDER = 201;
-    static final int PRODUCTS = 300;
-    static final int PRODUCT = 301;
-    static final int PRODUCTS_CURRENT_ORDER = 302;
-    static final int ORDER_DETAILS = 400;
-    static final int ORDER_DETAIL = 401;
-    static final int CURRENT_ORDER = 500;
-    static final int CURRENT_DETAIL = 501;
+    private static final int USERS = 100;
+    private static final int USER = 101;
+    private static final int ORDERS = 200;
+    private static final int ORDER = 201;
+    private static final int PRODUCTS = 300;
+    private static final int PRODUCT = 301;
+    private static final int PRODUCTS_CURRENT_ORDER = 302;
+    private static final int ORDER_DETAILS = 400;
+    private static final int ORDER_DETAIL = 401;
+    private static final int CURRENT_ORDER = 500;
+    private static final int CURRENT_DETAIL = 501;
 
     private static UriMatcher buildUriMatcher() {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -270,7 +270,7 @@ public class DBProvider extends ContentProvider {
         }
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
-            if (match == CURRENT_DETAIL) {
+            if (match == CURRENT_ORDER) {
                 getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
             }
         }
@@ -281,39 +281,33 @@ public class DBProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        String tableName = null, idColumn = null;
+        String tableName = null;
 
         //determinate table
         switch (match) {
             case USERS:
                 tableName = DBContract.UserEntry.TABLE_NAME;
-                //idColumn = DBContract.UserEntry.COLUMN_USER_ID;
                 break;
             case ORDERS:
                 tableName = DBContract.OrderEntry.TABLE_NAME;
-               // idColumn = DBContract.OrderEntry.COLUMN_ORDER_ID;
                 break;
             case PRODUCTS:
                 tableName = DBContract.ProductEntry.TABLE_NAME;
-               // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
                 break;
             case ORDER_DETAILS:
                 tableName = DBContract.OrderDetailEntry.TABLE_NAME;
-                // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
                 break;
             case CURRENT_ORDER:
                 tableName = DBContract.CurrentOrderEntry.TABLE_NAME;
-                // idColumn = DBContract.ProductEntry.COLUMN_PRODUCT_ID;
                 break;
         }
 
         //perform bulk insert
-        if(tableName != null){
+        if(tableName != null) {
             db.beginTransaction();
             int returnCount = 0;
             try {
                 for (ContentValues value : values) {
-
                     long _id = db.replace(tableName, null, value);
                     if (_id != -1) {
                         returnCount++;
@@ -323,12 +317,15 @@ public class DBProvider extends ContentProvider {
             } finally {
                 db.endTransaction();
             }
-            getContext().getContentResolver().notifyChange(uri, null);
-            if (tableName.equals(DBContract.ProductEntry.TABLE_NAME)) {
-                getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+
+            if (returnCount > 0) {
+                getContext().getContentResolver().notifyChange(uri, null);
+                if (tableName.equals(DBContract.ProductEntry.TABLE_NAME)) {
+                    getContext().getContentResolver().notifyChange(DBContract.ProductEntry.buildProductCurrentUri(), null);
+                }
             }
             return returnCount;
-        }else{
+        } else {
             return super.bulkInsert(uri, values);
         }
     }

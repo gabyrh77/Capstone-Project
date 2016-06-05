@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity
 
         setTitle(titleId);
         FragmentManager fragmentManager = getFragmentManager();
-
         if (mSelectedFragment== 0) {
             fragmentManager.beginTransaction()
                     .add(container, nextFragment, tag)
@@ -272,7 +271,9 @@ public class MainActivity extends AppCompatActivity
             bookIntent.putExtra(CurrentOrderService.PRODUCT_PRICE, price);
             bookIntent.setAction(CurrentOrderService.ACTION_ADD);
             startService(bookIntent);
+            Snackbar.make(mCoordinatorView, getString(R.string.product_added_to_cart), Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(mCoordinatorView, getString(R.string.msg_product_added_to_cart), Snackbar.LENGTH_SHORT).show();
         }
-        Snackbar.make(mCoordinatorView, "This item was added to your cart", Snackbar.LENGTH_LONG);
     }
 }

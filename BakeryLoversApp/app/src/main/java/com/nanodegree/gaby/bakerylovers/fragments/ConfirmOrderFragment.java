@@ -1,12 +1,13 @@
 package com.nanodegree.gaby.bakerylovers.fragments;
 
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nanodegree.gaby.bakerylovers.R;
+import com.nanodegree.gaby.bakerylovers.adapters.ConfirmOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.services.ProductsService;
@@ -24,18 +26,20 @@ import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ReviewOrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-    private static final String TAG = "ReviewOrderFragment";
+public class ConfirmOrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    private static final String TAG = "ConfirmOrderFragment";
+    private static final String ARG_DELIVER_ADDRESS = "arg_deliver_address";
     private RecyclerView mRecyclerView;
-    private CurrentOrderAdapter mListAdapter;
+    private ConfirmOrderAdapter mListAdapter;
 
-    public ReviewOrderFragment() {}
+    public ConfirmOrderFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView ");
-        getActivity().setTitle(getString(R.string.title_fragment_review_order));
+
+        getActivity().setTitle(getString(R.string.title_fragment_confirm));
 
         // get products on the background
         Intent productsIntent = new Intent(getActivity(), ProductsService.class);
@@ -43,8 +47,8 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
         getActivity().startService(productsIntent);
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_review_order, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_order_items);
+        View rootView = inflater.inflate(R.layout.fragment_confirm_order, container, false);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_current_order);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -53,10 +57,8 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
         // use a linear layout manager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
-
         // specify an adapter (see also next example)
-        mListAdapter = new CurrentOrderAdapter(getActivity(), null, choiceMode);
+        mListAdapter = new ConfirmOrderAdapter(getActivity());
         mRecyclerView.setAdapter(mListAdapter);
 
         return rootView;

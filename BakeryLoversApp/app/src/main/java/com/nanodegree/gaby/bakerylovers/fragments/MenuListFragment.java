@@ -102,8 +102,9 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
                         null,
                         null,
                         null);
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
@@ -128,7 +129,6 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 break;
         }
-
     }
 
     @Override

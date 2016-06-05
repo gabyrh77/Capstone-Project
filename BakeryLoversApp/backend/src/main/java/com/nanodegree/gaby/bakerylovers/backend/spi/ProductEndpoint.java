@@ -72,6 +72,7 @@ public class ProductEndpoint {
         record.setCalories(calories);
         record.setPrice(price);
         record.setAvailable(available);
+        record.setActive(true);
         ofy().save().entity(record).now();
         log.info("Created a new product id" + record.getId());
 
@@ -141,41 +142,111 @@ public class ProductEndpoint {
      */
     @ApiMethod(name = "product.load")
     public void loadProducts() {
-        List<Key<ProductRecord>> keys = ofy().load().type(ProductRecord.class).keys().list();
-        ofy().delete().keys(keys).now();
-
+        boolean created = false;
+        ProductRecord record;
         //moka torte
-        ProductRecord record1 = new ProductRecord();
-        record1.setDescription("Delicious chocolate and coffee cake");
-        record1.setName("Moka Torte");
-        record1.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/moka_torte.jpg");
-        record1.setCalories(300);
-        record1.setPrice(5000);
-        record1.setAvailable(true);
+        if (findProductByName("Moka Torte") == null) {
+            record = new ProductRecord();
+            record.setDescription("Delicious chocolate and coffee cake");
+            record.setName("Moka Torte");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/moka_torte.jpg");
+            record.setCalories(300);
+            record.setPrice(5000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
 
         //key lime pie
-        ProductRecord record2 = new ProductRecord();
-        record2.setDescription("Delightfully sweet with the perfect amount of tartness, this creamy bright key lime pie recipe is indulgent comfort in every bite.");
-        record2.setName("Key Lime Pie");
-        record2.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/key_lime_pie.jpg");
-        record2.setCalories(265);
-        record2.setPrice(4000);
-        record2.setAvailable(true);
+        if (findProductByName("Key Lime Pie") == null) {
+            record = new ProductRecord();
+            record.setDescription("Delightfully sweet with the perfect amount of tartness, this creamy bright key lime pie recipe is indulgent comfort in every bite.");
+            record.setName("Key Lime Pie");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/key_lime_pie.jpg");
+            record.setCalories(265);
+            record.setPrice(4000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
 
         //black forest cake
-        ProductRecord record3 = new ProductRecord();
-        record3.setDescription("A filling of cherries and kirsch-flavored whipped cream is standard in this classic German cake.");
-        record3.setName("Black Forest Cake");
-        record3.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/selva_negra.jpg");
-        record3.setCalories(400);
-        record3.setPrice(6000);
-        record3.setAvailable(true);
+        if (findProductByName("Black Forest Cake") == null) {
+            record = new ProductRecord();
+            record.setDescription("A filling of cherries and kirsch-flavored whipped cream is standard in this classic German cake.");
+            record.setName("Black Forest Cake");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/selva_negra.jpg");
+            record.setCalories(400);
+            record.setPrice(6000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
 
-        ofy().save().entities(record1, record2, record3).now();
+        //cinnamon roll
+        if (findProductByName("Cinnamon Roll") == null) {
+            record = new ProductRecord();
+            record.setDescription("Fluffy, soft, doughy, and bursting with buttery cinnamon swirls.");
+            record.setName("Cinnamon Roll");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/cinnamon_roll.jpg");
+            record.setCalories(200);
+            record.setPrice(1000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
+
+        //white bread
+        if (findProductByName("White Bread") == null) {
+            record = new ProductRecord();
+            record.setDescription("A delicious bread with a very light center with crunchy crust.");
+            record.setName("White Bread");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/white_bread.jpg");
+            record.setCalories(400);
+            record.setPrice(2000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
+
+        //passion fruit mousse
+        if (findProductByName("Passion Fruit Mousse") == null) {
+            record = new ProductRecord();
+            record.setDescription("Curtis Stone combines seductively fragrant passion fruit with light-as-air meringue to make mouthwateringly creamy mousses.");
+            record.setName("Passion Fruit Mousse");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/maracuya_mousse.jpg");
+            record.setCalories(400);
+            record.setPrice(2000);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
+
+        //cachitos
+        if (findProductByName("Ham Horn Bread") == null) {
+            record = new ProductRecord();
+            record.setDescription("Pillowy soft and sweetish yeasted bread filled with delicious minced ham.");
+            record.setName("Ham Horn Bread");
+            record.setPhotoUrl("https://dl.dropboxusercontent.com/u/92082104/cahitos.jpg");
+            record.setCalories(300);
+            record.setPrice(1500);
+            record.setAvailable(true);
+            record.setActive(true);
+            ofy().save().entity(record).now();
+            created = true;
+        }
+
         log.info("Created default products");
-
-        Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(TaskOptions.Builder.withPayload(new TopicNotificationTask()));
+        if (created) {
+            Queue queue = QueueFactory.getDefaultQueue();
+            queue.add(TaskOptions.Builder.withPayload(new TopicNotificationTask()));
+        }
     }
 
     private ProductRecord findProductByName(String name) {

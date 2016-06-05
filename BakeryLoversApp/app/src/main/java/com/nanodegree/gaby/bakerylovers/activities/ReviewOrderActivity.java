@@ -23,7 +23,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
-import com.nanodegree.gaby.bakerylovers.fragments.OrdersFragment;
+import com.nanodegree.gaby.bakerylovers.fragments.ConfirmOrderFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ProductDetailFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ReviewOrderFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.UpdateAmountDialogFragment;
@@ -42,10 +42,10 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
     private static final String TAG_FRAGMENT_CONFIRM_ORDER = "TAG_CONFIRM_ORDER";
-    private static final String TAG_FRAGMENT_LOCATION = "TAG_LOCATION";
     private static final String TAG_FRAGMENT_REVIEW_ORDER = "TAG_REVIEW_ORDER";
     private static final String TAG_DIALOG_AMOUNT_ORDER = "TAG_DIALOG_ORDER_AMOUNT";
     private String mSelectedFragment;
+    private String mDeliverLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +63,30 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
                 mSelectedFragment = savedInstanceState.getString(ARG_SELECTED_FRAGMENT);
             } else {
                 mSelectedFragment = null;
-                setFragment(TAG_FRAGMENT_REVIEW_ORDER, R.id.main_content, null);
+                setFragment(TAG_FRAGMENT_REVIEW_ORDER, null);
             }
         }
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.review_order, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem placeItem = menu.findItem(R.id.action_place_order);
+        if (mDeliverLocation == null) {
+            placeItem.setVisible(false);
+        } else {
+            placeItem.setVisible(true);
+        }
         return true;
     }
 
@@ -89,18 +104,23 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
         }
     }
 
-    private void setFragment(String idFragment, int container, Bundle args) {
+    @Override
+    public void onBackPressed() {
+        if(getFragmentManager().getBackStackEntryCount()>1){
+            getFragmentManager().popBackStack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void setFragment(String idFragment, Bundle args) {
         Fragment nextFragment;
         int titleId;
 
         switch (idFragment) {
-            case TAG_FRAGMENT_LOCATION:
-                titleId = R.string.title_fragment_order;
-                nextFragment = new OrdersFragment();
-                break;
             case TAG_FRAGMENT_CONFIRM_ORDER:
                 titleId = R.string.title_fragment_product;
-                nextFragment = new ProductDetailFragment();
+                nextFragment = new ConfirmOrderFragment();
                 break;
             case TAG_FRAGMENT_REVIEW_ORDER:
             default:
@@ -118,17 +138,18 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
 
         if (mSelectedFragment == null) {
             fragmentManager.beginTransaction()
-                    .add(container, nextFragment, idFragment)
+                    .add(R.id.main_content, nextFragment, idFragment)
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(container, nextFragment, idFragment)
+                    .replace(R.id.main_content, nextFragment, idFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .addToBackStack(idFragment)
                     .commit();
         }
 
         mSelectedFragment = idFragment;
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -215,8 +236,10 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                mDeliverLocation = place.getName().toString();
+                setFragment(TAG_FRAGMENT_CONFIRM_ORDER, null);
+            }else {
+                Toast.makeText(getApplicationContext(), "Please choose you deliver location", Toast.LENGTH_LONG).show();
             }
         }
     }

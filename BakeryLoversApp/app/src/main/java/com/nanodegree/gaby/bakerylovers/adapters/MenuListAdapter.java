@@ -48,12 +48,20 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
         mCursor.moveToPosition(position);
         holder.productName.setText(mCursor.getString(DBContract.ProductEntry.COLUMN_NAME_INDEX));
         holder.productPrice.setText(Utils.getCurrencyFormatted(mCursor.getDouble(DBContract.ProductEntry.COLUMN_PRICE_INDEX)));
-        //TODO: HANDLE PRODUCT AVAILABILITY
-        if (mCursor.isNull(DBContract.ProductEntry.COLUMN_CURRENT_AMOUNT_INDEX)){
-            holder.currentOrderButton.setTag(false);
-            holder.currentOrderButton.setImageResource(R.drawable.ic_add_shopping_cart);
+        if (mCursor.getInt(DBContract.ProductEntry.COLUMN_AVAILABLE_INDEX) > 0) {
+            holder.currentOrderButton.setEnabled(true);
+            if (mCursor.isNull(DBContract.ProductEntry.COLUMN_CURRENT_AMOUNT_INDEX)) {
+                holder.currentOrderButton.setContentDescription(mContext.getString(R.string.product_add_to_cart));
+                holder.currentOrderButton.setTag(false);
+                holder.currentOrderButton.setImageResource(R.drawable.ic_add_shopping_cart);
+            } else {
+                holder.currentOrderButton.setContentDescription(mContext.getString(R.string.product_added_to_cart));
+                holder.currentOrderButton.setTag(true);
+                holder.currentOrderButton.setImageResource(R.drawable.ic_add_shopping_cart);
+            }
         } else {
-            holder.currentOrderButton.setTag(true);
+            holder.currentOrderButton.setContentDescription(mContext.getString(R.string.product_not_available));
+            holder.currentOrderButton.setEnabled(false);
             holder.currentOrderButton.setImageResource(R.drawable.ic_remove_shopping_cart);
         }
         if (!mCursor.isNull(DBContract.ProductEntry.COLUMN_PHOTO_URL_INDEX)){

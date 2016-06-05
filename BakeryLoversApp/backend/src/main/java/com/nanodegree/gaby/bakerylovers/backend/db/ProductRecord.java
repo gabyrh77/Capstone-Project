@@ -17,6 +17,7 @@ public class ProductRecord {
     private String photoUrl;
     private double price;
     private boolean available;
+    private boolean active;
     private double calories;
 
     public ProductRecord() {}
@@ -71,5 +72,13 @@ public class ProductRecord {
 
     public void setCalories(double calories) {
         this.calories = calories;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

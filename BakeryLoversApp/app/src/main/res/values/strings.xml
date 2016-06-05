@@ -4,6 +4,7 @@
     <string name="title_fragment_product">Product Detail</string>
     <string name="title_fragment_order">Your Orders</string>
     <string name="title_fragment_review_order">Your Cart</string>
+    <string name="title_fragment_confirm">Confirm Order</string>
     <string name="title_update_amount_order">How Many?</string>
 
     <!-- Strings related to login -->
@@ -32,12 +33,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_profile_photo_desc">Profile photo</string>
+    <string name="product_not_available">Product not available</string>
+    <string name="product_add_to_cart">Add this product to your cart</string>
+    <string name="product_added_to_cart">This product was added to your cart</string>
+    <string name="msg_product_added_to_cart">You already added this to your cart.</string>
 
 
     <!-- string related to actions -->
     <string name="action_cancel">Cancel</string>
-    <string name="action_location">Choose deliver location</string>
+    <string name="action_location">Pick deliver location</string>
+    <string name="action_place_order">Place order</string>
     <string name="action_update">Update</string>
+    <string name="action_remove">Remove</string>
 
     <!-- string related to product details -->
     <string name="label_price">Price:</string>

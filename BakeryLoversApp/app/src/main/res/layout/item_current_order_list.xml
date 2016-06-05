@@ -24,14 +24,12 @@
             android:id="@+id/item_current_name_text"
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Moka Torte" />
+            android:layout_height="wrap_content" />
         <TextView
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:id="@+id/item_current_price_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5.000"
             android:layout_below="@+id/item_current_name_text" />
 
         <Button
@@ -41,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:text="REMOVE" />
+            android:text="@string/action_remove" />
     </RelativeLayout>
 
     <EditText
@@ -53,6 +51,5 @@
         android:gravity="center"
         android:layout_weight="1"
         android:inputType="number"
-        android:maxLines="1"
-        android:text="1" />
+        android:maxLines="1" />
 </LinearLayout>
