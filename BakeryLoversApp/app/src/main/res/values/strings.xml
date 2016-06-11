@@ -28,7 +28,8 @@
     <string name="text_new_user">New user?</string>
     <string name="text_click_here">Click here.</string>
 
-    <!-- string related to main activity -->
+
+    <!-- string related to main activities -->
     <string name="error_unable_to_logout">Something went wrong. Unable to logout.</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -37,6 +38,7 @@
     <string name="product_add_to_cart">Add this product to your cart</string>
     <string name="product_added_to_cart">This product was added to your cart</string>
     <string name="msg_product_added_to_cart">You already added this to your cart.</string>
+    <string name="text_select_address">Please select a deliver address to continue with your order.</string>
 
 
     <!-- string related to actions -->

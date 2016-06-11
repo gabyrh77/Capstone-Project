@@ -35,6 +35,14 @@
         <item name="android:textColor">@color/textPrimary</item>
     </style>
 
+    <style name="Label" parent="TextAppearance.AppCompat.Small" >
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Label.DarkGray" parent="Label">
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
     <style name="BodyText.Gray" parent="BodyText">
         <item name="android:textColor">@color/textGray</item>
     </style>

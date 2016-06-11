@@ -3,86 +3,133 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.nanodegree.gaby.bakerylovers.fragments.MenuListFragment">
     <LinearLayout
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:layout_alignParentTop="true"
         android:id="@+id/header_layout"
+        android:background="#ffccbc"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_weight="1"
             android:text="Qty."/>
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:gravity="center_horizontal"
+            android:layout_weight="4"
             android:text="Description"/>
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_weight="2"
             android:text="Subtotal"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_current_order"
         android:scrollbars="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/header_layout"
-        android:layout_above="@+id/total_grid"/>
-
+        android:layout_above="@+id/divider_view"/>
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/total_grid"
+        android:background="@color/textPrimary"/>
     <GridLayout
         android:id="@+id/total_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:useDefaultMargins="true"
         android:layout_alignParentBottom="true"
-        android:columnCount="2">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_columnSpan="2"
-            android:background="@color/textGray"/>
+        android:columnCount="4">
+
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Address:"/>
+            android:text="Address:" />
         <TextView
+            style="@style/BodyText.DarkGray"
+            android:id="@+id/text_address"
             android:layout_width="0dp"
+            android:layout_columnSpan="3"
             android:layout_gravity="fill_horizontal"
             android:text="Torres Paseo Colon very long address and" />
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="120dp"
+            android:minWidth="100dp"
             android:text="Items subtotal:" />
         <TextView
+            style="@style/Label.DarkGray"
+            android:id="@+id/text_subtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textStyle="italic"
             android:text="12.0000"/>
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delivery:"/>
         <TextView
+            style="@style/Label.DarkGray"
+            android:id="@+id/text_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textStyle="italic"
             android:text="2.000" />
         <TextView
+            style="@style/Label.DarkGray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Total Items:" />
+        <TextView
+            style="@style/Label.DarkGray"
+            android:id="@+id/text_total_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textStyle="italic"
+            android:text="12"/>
+        <TextView
+            style="@style/Label.DarkGray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
             android:text="Total Order:"/>
         <TextView
+            style="@style/Label.DarkGray"
+            android:id="@+id/text_total_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textStyle="italic"
             android:text="212.000" />
     </GridLayout>
 

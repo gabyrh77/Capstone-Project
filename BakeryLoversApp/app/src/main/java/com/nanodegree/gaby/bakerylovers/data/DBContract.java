@@ -289,6 +289,11 @@ public class DBContract {
                 COLUMN_PRICE_UND
         };
 
+        public static final String[] TOTAL_ORDER_COLUMN = {
+                "SUM(" + COLUMN_AMOUNT + ")",
+                "SUM(" + COLUMN_AMOUNT + "*" + COLUMN_PRICE_UND + ")"
+        };
+
         public static final int COLUMN_PRODUCT_ID_INDEX = 1;
         public static final int COLUMN_PRODUCT_NAME_INDEX = 2;
         public static final int COLUMN_PRODUCT_PHOTO_URL_INDEX = 3;

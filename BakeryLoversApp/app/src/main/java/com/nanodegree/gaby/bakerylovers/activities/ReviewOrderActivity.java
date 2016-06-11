@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,14 +38,17 @@ import static android.Manifest.permission.READ_CONTACTS;
  * Created by goropeza on 04/06/16.
  */
 
-public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler, UpdateAmountDialogFragment.UpdateAmountDialogListener{
+public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOrderAdapter.CurrentOrderAdapterOnClickHandler,
+        UpdateAmountDialogFragment.UpdateAmountDialogListener, FragmentManager.OnBackStackChangedListener{
     private static final String TAG = "ReviewOrderActivity";
     private static final int REQUEST_LOCATION = 0;
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
+    private static final String ARG_DELIVER_ADDRESS = "ARG_ADDRESS";
     private static final String TAG_FRAGMENT_CONFIRM_ORDER = "TAG_CONFIRM_ORDER";
     private static final String TAG_FRAGMENT_REVIEW_ORDER = "TAG_REVIEW_ORDER";
     private static final String TAG_DIALOG_AMOUNT_ORDER = "TAG_DIALOG_ORDER_AMOUNT";
+    private CoordinatorLayout mCoordinatorLayout;
     private String mSelectedFragment;
     private String mDeliverLocation;
 
@@ -51,16 +56,19 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_main);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_main_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getFragmentManager().addOnBackStackChangedListener(this);
 
         if (findViewById(R.id.main_content) != null) {
 
             if(savedInstanceState != null) {
                 mSelectedFragment = savedInstanceState.getString(ARG_SELECTED_FRAGMENT);
+                mDeliverLocation = savedInstanceState.getString(ARG_DELIVER_ADDRESS);
             } else {
                 mSelectedFragment = null;
                 setFragment(TAG_FRAGMENT_REVIEW_ORDER, null);
@@ -99,6 +107,9 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             case R.id.action_location:
                 getUserLocation();
                 return true;
+            case R.id.action_place_order:
+                handleContinueAction();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -111,6 +122,13 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ARG_SELECTED_FRAGMENT, mSelectedFragment);
+        outState.putString(ARG_DELIVER_ADDRESS, mDeliverLocation);
     }
 
     private void setFragment(String idFragment, Bundle args) {
@@ -140,6 +158,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             fragmentManager.beginTransaction()
                     .add(R.id.main_content, nextFragment, idFragment)
                     .commit();
+            mSelectedFragment = idFragment;
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.main_content, nextFragment, idFragment)
@@ -148,7 +167,6 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
                     .commit();
         }
 
-        mSelectedFragment = idFragment;
         invalidateOptionsMenu();
     }
 
@@ -188,6 +206,19 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
         bookIntent.putExtra(CurrentOrderService.PRODUCT_AMOUNT, amount);
         bookIntent.setAction(CurrentOrderService.ACTION_UPDATE);
         startService(bookIntent);
+    }
+
+    private void handleContinueAction() {
+        Log.d(TAG, "Selected fragment " + mSelectedFragment);
+        if (mSelectedFragment.equals(TAG_FRAGMENT_REVIEW_ORDER)) {
+            if (mDeliverLocation == null) {
+                Snackbar.make(mCoordinatorLayout, getString(R.string.text_select_address), Snackbar.LENGTH_LONG).show();
+            } else {
+                setFragment(TAG_FRAGMENT_CONFIRM_ORDER, ConfirmOrderFragment.newInstanceBundle(mDeliverLocation));
+            }
+        } else {
+            Snackbar.make(mCoordinatorLayout, "Placing order", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     private boolean checkLocationPermission() {
@@ -237,7 +268,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
                 mDeliverLocation = place.getName().toString();
-                setFragment(TAG_FRAGMENT_CONFIRM_ORDER, null);
+                setFragment(TAG_FRAGMENT_CONFIRM_ORDER, ConfirmOrderFragment.newInstanceBundle(mDeliverLocation));
             }else {
                 Toast.makeText(getApplicationContext(), "Please choose you deliver location", Toast.LENGTH_LONG).show();
             }
@@ -254,6 +285,16 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+       Log.d(TAG, "Called back stack changed");
+        if (mSelectedFragment.equals(TAG_FRAGMENT_CONFIRM_ORDER)) {
+            mSelectedFragment = TAG_FRAGMENT_REVIEW_ORDER;
+        } else {
+            mSelectedFragment = TAG_FRAGMENT_CONFIRM_ORDER;
         }
     }
 }

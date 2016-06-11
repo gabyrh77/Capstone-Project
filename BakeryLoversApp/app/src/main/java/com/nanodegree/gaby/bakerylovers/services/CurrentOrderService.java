@@ -11,6 +11,7 @@ public class CurrentOrderService extends IntentService{
     private static final String TAG = "CurrentOrderService";
     public static final String ACTION_ADD = "com.nanodegree.gaby.bakerylovers.services.action.ADD_TO_ORDER";
     public static final String ACTION_UPDATE = "com.nanodegree.gaby.bakerylovers.services.action.UPDATE_ORDER";
+    public static final String ACTION_PLACE = "com.nanodegree.gaby.bakerylovers.services.action.PLACE_ORDER";
     public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE_FROM_ORDER";
     public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID_ORDER";
     public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
@@ -23,17 +24,26 @@ public class CurrentOrderService extends IntentService{
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            final long productId = intent.getLongExtra(PRODUCT_ID, 0);
-            if (productId > 0) {
-                if (ACTION_ADD.equals(action)) {
-                    addToOrder(productId, intent.getDoubleExtra(PRODUCT_PRICE, 0));
-                } else  if (ACTION_UPDATE.equals(action)) {
-                    updateProductOrder(productId, intent.getIntExtra(PRODUCT_AMOUNT, 1));
-                }else if (ACTION_DELETE.equals(action)) {
-                    deleteFromOrder(productId);
+            if (ACTION_PLACE.equals(action)) {
+                placeOrder();
+            }
+            else {
+                final long productId = intent.getLongExtra(PRODUCT_ID, 0);
+                if (productId > 0) {
+                    if (ACTION_ADD.equals(action)) {
+                        addToOrder(productId, intent.getDoubleExtra(PRODUCT_PRICE, 0));
+                    } else if (ACTION_UPDATE.equals(action)) {
+                        updateProductOrder(productId, intent.getIntExtra(PRODUCT_AMOUNT, 1));
+                    } else if (ACTION_DELETE.equals(action)) {
+                        deleteFromOrder(productId);
+                    }
                 }
             }
         }
+    }
+
+    private void placeOrder() {
+        //TODO: query current items, fill backend class and send backend request, delete current table, send broadcast to activity
     }
 
     private void deleteFromOrder(long id) {

@@ -32,7 +32,8 @@ import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener, MenuListAdapter.MenuListAdapterOnClickHandler {
+        implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener,
+        MenuListAdapter.MenuListAdapterOnClickHandler {
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mUserService = new UserService(this);
-        mCoordinatorView = (CoordinatorLayout) findViewById(R.id.main_coordinator_view);
+        mCoordinatorView = (CoordinatorLayout) findViewById(R.id.coordinator_main_view);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
