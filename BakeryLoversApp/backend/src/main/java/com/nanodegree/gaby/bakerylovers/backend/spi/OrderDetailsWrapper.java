@@ -1,13 +1,9 @@
 package com.nanodegree.gaby.bakerylovers.backend.spi;
 
+import com.nanodegree.gaby.bakerylovers.backend.db.OrderDetailObject;
+
 import java.util.ArrayList;
 
-class OrderDetailObject {
-    long product;
-    int amount;
-    double price;
-    double total;
-}
 /** The object model for the data we are sending through endpoints */
 public class OrderDetailsWrapper {
 

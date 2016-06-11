@@ -3,9 +3,18 @@ package com.nanodegree.gaby.bakerylovers.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
+import com.nanodegree.gaby.bakerylovers.MainApplication;
+import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderDetailObject;
+import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderDetailsWrapper;
+import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderRecord;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class CurrentOrderService extends IntentService{
     private static final String TAG = "CurrentOrderService";
@@ -13,6 +22,7 @@ public class CurrentOrderService extends IntentService{
     public static final String ACTION_UPDATE = "com.nanodegree.gaby.bakerylovers.services.action.UPDATE_ORDER";
     public static final String ACTION_PLACE = "com.nanodegree.gaby.bakerylovers.services.action.PLACE_ORDER";
     public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE_FROM_ORDER";
+    public static final String STR_ADDRESS = "com.nanodegree.gaby.bakerylovers.services.extra.STR_ADDRESS";
     public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID_ORDER";
     public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
     public static final String PRODUCT_AMOUNT = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_AMOUNT_ORDER";
@@ -25,7 +35,8 @@ public class CurrentOrderService extends IntentService{
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_PLACE.equals(action)) {
-                placeOrder();
+                final String address = intent.getStringExtra(STR_ADDRESS);
+                placeOrder(address);
             }
             else {
                 final long productId = intent.getLongExtra(PRODUCT_ID, 0);
@@ -42,8 +53,83 @@ public class CurrentOrderService extends IntentService{
         }
     }
 
-    private void placeOrder() {
-        //TODO: query current items, fill backend class and send backend request, delete current table, send broadcast to activity
+    private void placeOrder(String address) {
+        boolean success = false;
+        Cursor mCurrentOrder = getContentResolver().query(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry.DETAIL_COLUMNS, null, null, null);
+        if (mCurrentOrder != null && mCurrentOrder.getCount() > 0) {
+            ArrayList<OrderDetailObject> detailList = new ArrayList<>();
+            for (int i = 0; i < mCurrentOrder.getCount(); i++) {
+                mCurrentOrder.moveToPosition(i);
+                OrderDetailObject detail = new OrderDetailObject();
+                detail.setAmount(mCurrentOrder.getInt(DBContract.CurrentOrderEntry.COLUMN_AMOUNT_INDEX));
+                detail.setPrice(mCurrentOrder.getDouble(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND_INDEX));
+                detail.setProductId(mCurrentOrder.getLong(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID_INDEX));
+                detailList.add(detail);
+            }
+            mCurrentOrder.close();
+            OrderDetailsWrapper wrapper = new OrderDetailsWrapper();
+            wrapper.setMylist(detailList);
+            try {
+
+                OrderRecord order = ((MainApplication)getApplication()).getAPIService().order().create(
+                        UserService.getUserSessionId(getBaseContext()),
+                        address, false, wrapper).execute();
+                if (order != null) {
+                    success = true;
+                    deleteCurrentOrder();
+                    addNewOrder(order);
+
+                }
+            }catch (Exception e) {
+                Log.d(TAG, e.getMessage());
+            }
+        }
+        //TODO: send broadcast to activity
+    }
+
+    private void deleteCurrentOrder() {
+        try {
+            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, null, null);
+        }catch(Exception e){
+            Log.d(TAG, e.getMessage());
+        }
+    }
+
+    private void addNewOrder(OrderRecord order) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DBContract.OrderEntry.COLUMN_ORDER_ID, order.getId());
+            values.put(DBContract.OrderEntry.COLUMN_TOTAL_DELIVERY, order.getTotalDelivery());
+            values.put(DBContract.OrderEntry.COLUMN_TOTAL_PRICE, order.getTotalOrder());
+            values.put(DBContract.OrderEntry.COLUMN_PLACED_DATE, order.getPlaced().toString());
+            getContentResolver().insert(DBContract.OrderEntry.CONTENT_URI, values);
+
+            List<OrderDetailObject> details = order.getDetails();
+            if (details != null && details.size() > 0) {
+                Vector<ContentValues> contentValuesVector = new Vector<>(details.size());
+                for (OrderDetailObject detailResponse: details) {
+                    ContentValues productValues = new ContentValues();
+                    productValues.put(DBContract.OrderDetailEntry.COLUMN_PRODUCT_ID, detailResponse.getProductId());
+                    productValues.put(DBContract.OrderDetailEntry.COLUMN_ORDER_ID, order.getId());
+                    productValues.put(DBContract.OrderDetailEntry.COLUMN_AMOUNT, detailResponse.getAmount());
+                    productValues.put(DBContract.OrderDetailEntry.COLUMN_PRICE_UND, detailResponse.getPrice());
+                    productValues.put(DBContract.OrderDetailEntry.COLUMN_TOTAL_PRICE, detailResponse.getSubtotal());
+
+                    //add to vector
+                    contentValuesVector.add(productValues);
+                }
+
+                // perform bulk insert
+                if ( contentValuesVector.size() > 0 ) {
+                    Log.e(TAG, "BULK INSERT ORDER DETAILS " + String.valueOf(contentValuesVector.size()));
+                    ContentValues[] cvArray = new ContentValues[contentValuesVector.size()];
+                    contentValuesVector.toArray(cvArray);
+                    getContentResolver().bulkInsert(DBContract.OrderDetailEntry.CONTENT_URI, cvArray);
+                }
+            }
+        }catch(Exception e){
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     private void deleteFromOrder(long id) {

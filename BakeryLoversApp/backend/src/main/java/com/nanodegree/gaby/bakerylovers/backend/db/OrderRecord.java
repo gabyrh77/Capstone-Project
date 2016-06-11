@@ -1,16 +1,11 @@
 package com.nanodegree.gaby.bakerylovers.backend.db;
 
-import com.google.api.server.spi.config.AnnotationBoolean;
-import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.Load;
+import com.googlecode.objectify.annotation.Serialize;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** The Objectify object model for orders we are persisting */
@@ -19,10 +14,10 @@ public class OrderRecord {
 
     @Id
     Long id;
-    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private Key<UserRecord> user;
-    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    @Load List<Ref<OrderDetailRecord>> details = new ArrayList<>();
+    @Index
+    private Long userId;
+    @Serialize
+    private List<OrderDetailObject> details;
     private DateTime delivered;
     private DateTime placed;
     private double totalOrder;
@@ -35,18 +30,18 @@ public class OrderRecord {
     }
 
     public Long getUserId() {
-        return user==null?null:user.getId();
+        return userId;
     }
 
-    public void setUser(UserRecord user) {
-        this.user = Key.create(user);
+    public void setUserId(Long user) {
+        this.userId = user;
     }
 
-    public List<Ref<OrderDetailRecord>> getDetails() {
+    public List<OrderDetailObject> getDetails() {
         return details;
     }
 
-    public void setDetails(List<Ref<OrderDetailRecord>> details) {
+    public void setDetails(List<OrderDetailObject> details) {
         this.details = details;
     }
 

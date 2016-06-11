@@ -15,16 +15,12 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Ref;
-import com.nanodegree.gaby.bakerylovers.backend.db.OrderDetailRecord;
+import com.nanodegree.gaby.bakerylovers.backend.db.OrderDetailObject;
 import com.nanodegree.gaby.bakerylovers.backend.db.OrderRecord;
-import com.nanodegree.gaby.bakerylovers.backend.db.ProductRecord;
 import com.nanodegree.gaby.bakerylovers.backend.db.UserRecord;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -78,32 +74,22 @@ public class OrderEndpoint {
             return null;
         }
         OrderRecord record = new OrderRecord();
-        record.setUser(user);
+        record.setUserId(user.getId());
         //get current date time with Calendar()
         Calendar cal = Calendar.getInstance();
         record.setPlaced(new DateTime(cal.getTime(), cal.getTimeZone()));
         ofy().save().entity(record).now();
 
-        List<Ref<OrderDetailRecord>> listRefDetails = new ArrayList<>();
         double orderTotal = 0;
         for (OrderDetailObject detail:details){
-            OrderDetailRecord detailRecord = new OrderDetailRecord();
-            detailRecord.setOrder(Key.create(OrderRecord.class, record.getId()));
-            detailRecord.setProduct(Key.create(ProductRecord.class, detail.product));
-            detailRecord.setPrice(detail.price);
-            detailRecord.setAmount(detail.amount);
-            detailRecord.setTotal(detail.price * detail.amount);
-            detailRecord.setGeneratedId();
-            ofy().save().entity(detailRecord).now();
-            listRefDetails.add(Ref.create(detailRecord));
-            orderTotal += detailRecord.getTotal();
+            detail.setSubtotal(detail.getPrice() * detail.getAmount());
+            orderTotal += detail.getSubtotal();
         }
-        record.setDetails(listRefDetails);
+        record.setDetails(details);
         record.setTotalDelivery(setDeliveryCost(address));
         record.setTotalOrder(orderTotal + record.getTotalDelivery());
         ofy().save().entity(record).now();
         log.info("Created a new order id" + record.getId() + " for the user " + user.getEmail());
-
         if (save) {
             user.setAddress(address);
             ofy().save().entity(user).now();
@@ -131,7 +117,7 @@ public class OrderEndpoint {
             return null;
         }
         List<OrderRecord> records = ofy().load().type(OrderRecord.class)
-                .filter("user", Key.create(record)).list();
+                .filter("userId", record.getId()).list();
         log.info("listOrders: Returned a collection of " + records.size() + " orders for the user " + record.getEmail());
         return CollectionResponse.<OrderRecord>builder().setItems(records).build();
     }

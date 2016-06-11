@@ -99,6 +99,12 @@ public class UserService {
         return sharedPrefLogin.getString(context.getString(R.string.pref_session_id_key), "");
     }
 
+    public static Long getUserId(Context context) {
+        SharedPreferences sharedPrefLogin = context.getSharedPreferences(
+                context.getString(R.string.preference_session_file_key), Context.MODE_PRIVATE);
+        return sharedPrefLogin.getLong(context.getString(R.string.pref_user_id_key), 0);
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
