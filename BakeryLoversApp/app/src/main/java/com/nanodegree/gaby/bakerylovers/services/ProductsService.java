@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.util.Log;
 
-import com.nanodegree.gaby.bakerylovers.backend.myApi.MyApi;
+import com.nanodegree.gaby.bakerylovers.MainApplication;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.CollectionResponseProductRecord;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.ProductRecord;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
@@ -44,9 +44,8 @@ public class ProductsService extends IntentService {
 
     private void getProducts() {
         Log.d(TAG, "called get products");
-        MyApi myApiService = APIService.buildAPIService();
         try {
-            CollectionResponseProductRecord productsWrapper = myApiService.product().list().execute();
+            CollectionResponseProductRecord productsWrapper = ((MainApplication)getApplication()).getAPIService().product().list().execute();
             Log.d(TAG, "called get products");
             if (productsWrapper != null &&  productsWrapper.getItems() != null) {
                 List<ProductRecord> products = productsWrapper.getItems();

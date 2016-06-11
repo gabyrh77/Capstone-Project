@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mUserService = new UserService(getApplicationContext(), this);
+        mUserService = new UserService(this);
         // Set up the login form.
         mCoordinatorView = findViewById(R.id.coordinator_main_view);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);

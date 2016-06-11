@@ -1,5 +1,6 @@
 package com.nanodegree.gaby.bakerylovers.services;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
+import com.nanodegree.gaby.bakerylovers.MainApplication;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.MyApi;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.UserRecord;
@@ -19,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class UserService {
     private static final String TAG = "UserService";
-    private Context mContext;
+    private Activity mContext;
     private MyApi myApiService;
     private SharedPreferences mSharedPrefLogin;
     private UserServiceListener mListener;
@@ -38,13 +40,13 @@ public class UserService {
         void onCancelled(@UserServiceType int serviceType);
     }
 
-    public UserService(Context context, UserServiceListener listener) {
+    public UserService(Activity context) {
         mContext = context;
         mSharedPrefLogin = context.getSharedPreferences(
                 context.getString(R.string.preference_session_file_key), Context.MODE_PRIVATE);
-        mListener = listener;
+        mListener = (UserServiceListener)context;
 
-        myApiService = APIService.buildAPIService();
+        myApiService = ((MainApplication)context.getApplication()).getAPIService();
     }
 
     public void login(String userEmail, String userPassword) {

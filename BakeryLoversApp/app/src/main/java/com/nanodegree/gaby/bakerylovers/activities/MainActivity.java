@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_FRAGMENT_LIST_MENU = "TAG_LIST_MENU";
     private static final String TAG_FRAGMENT_ORDERS = "TAG_ORDERS";
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
-    private static final String TAG_DIALOG_AMOUNT_ORDER = "TAG_DIALOG_ORDER_AMOUNT";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private int mSelectedFragment;
     private UserService mUserService;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mUserService = new UserService(this, this);
+        mUserService = new UserService(this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.main_coordinator_view);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

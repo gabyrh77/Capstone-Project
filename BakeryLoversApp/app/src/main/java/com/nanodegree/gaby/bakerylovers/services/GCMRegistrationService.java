@@ -9,8 +9,8 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.nanodegree.gaby.bakerylovers.MainApplication;
 import com.nanodegree.gaby.bakerylovers.R;
-import com.nanodegree.gaby.bakerylovers.backend.myApi.MyApi;
 
 import java.io.IOException;
 
@@ -21,11 +21,9 @@ public class GCMRegistrationService extends IntentService {
     private static final String TAG = "GCMRegistrationService";
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
     private static final String[] TOPICS = {"global", "products"};
-    private static MyApi myApiService;
 
     public GCMRegistrationService() {
         super(TAG);
-        myApiService = APIService.buildAPIService();
     }
 
     @Override
@@ -56,7 +54,7 @@ public class GCMRegistrationService extends IntentService {
 
     private void sendRegistrationToServer(String token) throws IOException{
         String sessionId = UserService.getUserSessionId(this);
-        myApiService.device().register(token, sessionId).execute();
+        ((MainApplication)getApplication()).getAPIService().device().register(token, sessionId).execute();
     }
 
     private void subscribeTopics(String token) throws IOException {

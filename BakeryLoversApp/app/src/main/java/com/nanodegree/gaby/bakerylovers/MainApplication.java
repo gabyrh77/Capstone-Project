@@ -1,21 +1,23 @@
-package com.nanodegree.gaby.bakerylovers.services;
+package com.nanodegree.gaby.bakerylovers;
+
+import android.app.Application;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.MyApi;
 
-import java.io.IOException;
-
 /**
- * Created by gaby_ on 15/5/2016.
+ * Created by goropeza on 11/06/16.
  */
-public class APIService {
+
+public class MainApplication extends Application {
     private static final String API_URL = "https://capstone-project-8df9f.appspot.com/_ah/api/"; //http://10.0.2.2:8080/_ah/api/
     private static final String APP_NAME = "Bakery Lovers";
+    private MyApi mApiService;
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-    public static MyApi buildAPIService(){
         MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                 .setApplicationName(APP_NAME)
                 .setRootUrl(API_URL)
@@ -26,6 +28,10 @@ public class APIService {
                     }
                 })*/;
 
-        return builder.build();
+        mApiService = builder.build();
+    }
+
+    public MyApi getAPIService() {
+        return mApiService;
     }
 }
