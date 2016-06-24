@@ -14,7 +14,7 @@ import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
+import com.googlecode.objectify.Key;
 import com.nanodegree.gaby.bakerylovers.backend.db.OrderDetailObject;
 import com.nanodegree.gaby.bakerylovers.backend.db.OrderRecord;
 import com.nanodegree.gaby.bakerylovers.backend.db.UserRecord;
@@ -75,9 +75,10 @@ public class OrderEndpoint {
         }
         OrderRecord record = new OrderRecord();
         record.setUserId(user.getId());
-        //get current date time with Calendar()
+        record.setAddress(address);
+
         Calendar cal = Calendar.getInstance();
-        record.setPlaced(new DateTime(cal.getTime(), cal.getTimeZone()));
+        record.setPlaced(cal.getTime());
         ofy().save().entity(record).now();
 
         double orderTotal = 0;
@@ -97,7 +98,7 @@ public class OrderEndpoint {
         }
 
         Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(TaskOptions.Builder.withPayload(new DeliveryNotificationTask(user, record))
+        queue.add(TaskOptions.Builder.withPayload(new DeliveryNotificationTask(record.getId()))
                 .etaMillis(System.currentTimeMillis() + 5000));
 
         return record;
@@ -122,6 +123,16 @@ public class OrderEndpoint {
         return CollectionResponse.<OrderRecord>builder().setItems(records).build();
     }
 
+    /**
+     * Delete all orders
+     *
+     */
+    @ApiMethod(name = "order.deleteAll")
+    public void deleteOrders() {
+        Iterable<Key<OrderRecord>> allKeys = ofy().load().type(OrderRecord.class).keys();
+        ofy().delete().keys(allKeys);
+    }
+
     private UserRecord findUserByToken(String token) {
         return ofy().load().type(UserRecord.class).filter("loginToken", token).first().now();
     }
@@ -132,27 +143,29 @@ public class OrderEndpoint {
     }
 
     private static class DeliveryNotificationTask implements DeferredTask {
-        private UserRecord mUser;
-        private OrderRecord mOrder;
+        private Long mOrderId;
 
-        public DeliveryNotificationTask(UserRecord user, OrderRecord orderRecord){
-            mOrder = orderRecord;
-            mUser = user;
+        public DeliveryNotificationTask(Long orderId){
+            mOrderId = orderId;
         }
 
         @Override
         public void run() {
             try{
-                GCMMessageSender sender = new GCMMessageSender();
-                sender.sendMessageToUser("Your order will arrive in less than 5 minutes. Enjoy our delicious products and come back soon.", mUser.getId());
-                OrderRecord orderUpdated = ofy().load().type(OrderRecord.class).id(mOrder.getId()).now();
-                //get current date time with Calendar()
-                Calendar cal = Calendar.getInstance();
-                orderUpdated.setDelivered(new DateTime(cal.getTime(), cal.getTimeZone()));
-                ofy().save().entity(orderUpdated).now();
-                log.info("Sent delivery notification for the user " + mUser.getEmail());
+
+                OrderRecord orderUpdated = ofy().load().type(OrderRecord.class).id(mOrderId).now();
+                if (orderUpdated != null) {
+                    GCMMessageSender sender = new GCMMessageSender();
+                    sender.sendMessageToUser("Your order will arrive in less than 5 minutes. Enjoy our delicious products and come back soon.", orderUpdated.getUserId());
+
+                    //get current date time with Calendar()
+                    Calendar cal = Calendar.getInstance();
+                    orderUpdated.setDelivered(cal.getTime());
+                    ofy().save().entity(orderUpdated).now();
+                    log.info("Sent delivery notification for the userId " + orderUpdated.getUserId().toString());
+                }
             }catch (Exception e) {
-                log.warning("Error sending product notifications: " + e.getMessage());
+                log.warning("Error sending order notifications: " + e.getMessage());
             }
         }
     }

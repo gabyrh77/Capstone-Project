@@ -7,6 +7,9 @@ import java.util.ArrayList;
 /** The object model for the data we are sending through endpoints */
 public class OrderDetailsWrapper {
 
+    public OrderDetailsWrapper() {
+    }
+
     private ArrayList<OrderDetailObject> mylist;
 
     public OrderDetailsWrapper(ArrayList<OrderDetailObject> sData){

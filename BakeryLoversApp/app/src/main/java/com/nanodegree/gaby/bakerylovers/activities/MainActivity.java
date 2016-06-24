@@ -29,6 +29,8 @@ import com.nanodegree.gaby.bakerylovers.fragments.OrdersFragment;
 import com.nanodegree.gaby.bakerylovers.fragments.ProductDetailFragment;
 import com.nanodegree.gaby.bakerylovers.services.CurrentOrderService;
 import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
+import com.nanodegree.gaby.bakerylovers.services.OrdersService;
+import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 public class MainActivity extends AppCompatActivity
@@ -52,6 +54,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // get products on the background
+        Intent productsIntent = new Intent(this, ProductsService.class);
+        productsIntent.setAction(ProductsService.ACTION_GET);
+        startService(productsIntent);
+
+        // get orders on the background
+        Intent ordersIntent = new Intent(this, OrdersService.class);
+        ordersIntent.setAction(OrdersService.ACTION_GET);
+        startService(ordersIntent);
 
         mUserService = new UserService(this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.coordinator_main_view);

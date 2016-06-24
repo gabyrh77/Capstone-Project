@@ -218,6 +218,10 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
             }
         } else {
             Snackbar.make(mCoordinatorLayout, "Placing order", Snackbar.LENGTH_LONG).show();
+            Intent bookIntent = new Intent(this, CurrentOrderService.class);
+            bookIntent.putExtra(CurrentOrderService.STR_ADDRESS, mDeliverLocation);
+            bookIntent.setAction(CurrentOrderService.ACTION_PLACE);
+            startService(bookIntent);
         }
     }
 

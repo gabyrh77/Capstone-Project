@@ -28,7 +28,7 @@ public class DBContract {
                 COLUMN_EMAIL + " TEXT NOT NULL, " +
                 COLUMN_FULL_NAME + " TEXT NOT NULL, " +
                 COLUMN_ADDRESS + " TEXT, " +
-                COLUMN_PHONE_NUMBER + " NUMERIC, " +
+                COLUMN_PHONE_NUMBER + " TEXT, " +
                 COLUMN_GOOGLE_ACCOUNT + " INTEGER DEFAULT 0" +
                 ");";
 
@@ -152,6 +152,7 @@ public class DBContract {
         //columns
         public static final String COLUMN_ORDER_ID = "order_id";
         public static final String COLUMN_USER_ID = "order_user_id";
+        public static final String COLUMN_ADDRESS = "order_address";
         public static final String COLUMN_PLACED_DATE = "order_placed_date";
         public static final String COLUMN_DELIVERED_DATE = "order_delivered_date";
         public static final String COLUMN_TOTAL_PRICE = "order_total_price";
@@ -162,30 +163,49 @@ public class DBContract {
                 _ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_ORDER_ID + " INTEGER UNIQUE NOT NULL, " +
                 COLUMN_USER_ID + " INTEGER NOT NULL, " +
-                COLUMN_PLACED_DATE + " TEXT NOT NULL, " +
+                COLUMN_ADDRESS + " TEXT NOT NULL, " +
+                COLUMN_PLACED_DATE + " INTEGER NOT NULL, " +
                 COLUMN_TOTAL_PRICE + " REAL NOT NULL, " +
                 COLUMN_TOTAL_DELIVERY + " REAL NOT NULL, " +
-                COLUMN_DELIVERED_DATE + " TEXT, " +
+                COLUMN_DELIVERED_DATE + " INTEGER, " +
                 "CONSTRAINT 'fk_order_user_id' FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + "(" + UserEntry.COLUMN_USER_ID + ") ON DELETE CASCADE" +
                 ");";
 
+        // join with product table
+        public static final String DETAIL_PRODUCT_JOIN = TABLE_NAME + " INNER JOIN " + OrderDetailEntry.TABLE_NAME +
+                " ON " + COLUMN_ORDER_ID + " = " + OrderDetailEntry.COLUMN_ORDER_ID +
+                " INNER JOIN " + ProductEntry.TABLE_NAME +
+                " ON " + OrderDetailEntry.COLUMN_PRODUCT_ID + " = " + ProductEntry.COLUMN_PRODUCT_ID;
+
         //Cursors
         public static final String[] DETAIL_COLUMNS = {
-                _ID,
+                TABLE_NAME + "." + _ID + " AS " + _ID,
                 COLUMN_ORDER_ID,
-                COLUMN_USER_ID,
+                COLUMN_ADDRESS,
                 COLUMN_PLACED_DATE,
                 COLUMN_TOTAL_PRICE,
                 COLUMN_TOTAL_DELIVERY,
-                COLUMN_DELIVERED_DATE
+                COLUMN_DELIVERED_DATE,
+                OrderDetailEntry.COLUMN_PRODUCT_ID,
+                ProductEntry.COLUMN_NAME,
+                ProductEntry.COLUMN_PHOTO_URL,
+                OrderDetailEntry.COLUMN_AMOUNT,
+                OrderDetailEntry.COLUMN_PRICE_UND,
+                OrderDetailEntry.COLUMN_TOTAL_PRICE
         };
 
         public static final int COLUMN_ORDER_ID_INDEX = 1;
-        public static final int COLUMN_USER_ID_INDEX = 2;
+        public static final int COLUMN_ADDRESS_INDEX = 2;
         public static final int COLUMN_PLACED_DATE_INDEX = 3;
         public static final int COLUMN_TOTAL_PRICE_INDEX = 4;
         public static final int COLUMN_TOTAL_DELIVERY_INDEX = 5;
         public static final int COLUMN_DELIVERED_DATE_INDEX = 6;
+        public static final int COLUMN_PRODUCT_ID_INDEX = 7;
+        public static final int COLUMN_PRODUCT_NAME_INDEX = 8;
+        public static final int COLUMN_PRODUCT_PHOTO_INDEX = 9;
+        public static final int COLUMN_PRODUCT_AMOUNT_INDEX = 10;
+        public static final int COLUMN_PRODUCT_PRICE_INDEX = 11;
+        public static final int COLUMN_PRODUCT_TOTAL_INDEX = 12;
 
         //Uri
         public static final Uri CONTENT_URI =
@@ -261,6 +281,7 @@ public class DBContract {
 
         //columns
         public static final String COLUMN_PRODUCT_ID = "current_product_id";
+        public static final String COLUMN_USER_ID = "current_user_id";
         public static final String COLUMN_AMOUNT = "current_amount";
         public static final String COLUMN_PRICE_UND = "current_price_und";
 
@@ -273,10 +294,11 @@ public class DBContract {
         public static final String SQL_CREATE_CURRENT_ORDER_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 _ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_PRODUCT_ID + " INTEGER NOT NULL, " +
+                COLUMN_USER_ID + " INTEGER NOT NULL, " +
                 COLUMN_AMOUNT + " INTEGER NOT NULL, " +
                 COLUMN_PRICE_UND + " REAL NOT NULL, " +
                 "CONSTRAINT 'fk_current_order_product' FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductEntry.TABLE_NAME + "(" + ProductEntry.COLUMN_PRODUCT_ID + "), " +
-                "CONSTRAINT 'unique_current_order_product' UNIQUE (" + COLUMN_PRODUCT_ID + ") ON CONFLICT REPLACE" +
+                "CONSTRAINT 'unique_current_order_product_user' UNIQUE (" + COLUMN_PRODUCT_ID + "," + COLUMN_PRODUCT_ID +  ") ON CONFLICT REPLACE" +
                 ");";
 
         //Cursors

@@ -21,7 +21,7 @@ import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 
 
-public class MenuListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MenuListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MenuListFragment";
     private static final int LOADER_PRODUCTS = 0;
     private static final int LOADER_CART = 1;
@@ -34,30 +34,17 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView ");
-
-        // get products on the background
-        Intent productsIntent = new Intent(getActivity(), ProductsService.class);
-        productsIntent.setAction(ProductsService.ACTION_GET);
-        getActivity().startService(productsIntent);
-
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_menu_list, container, false);
+
         mReviewOrderButton = (FloatingActionButton) rootView.findViewById(R.id.review_order_button);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_menu_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
 
         //TODO: add empty view
 
-        // specify an adapter (see also next example)
         mListAdapter = new MenuListAdapter(getActivity(), null, choiceMode);
         mRecyclerView.setAdapter(mListAdapter);
 

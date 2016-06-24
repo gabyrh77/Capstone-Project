@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/small_margin">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small_margin"
+        android:columnCount="2"
+        android:useDefaultMargins="true">
+        <TextView
+            android:id="@+id/order_placed"
+            android:textColor="@color/textPrimary"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:text="Tuesday, 22 May 09:00AM"/>
+
+        <TextView
+            android:id="@+id/order_number"
+            android:text="Order #1"
+            android:layout_gravity="end" />
+        <TextView
+            android:id="@+id/order_address"
+            android:text="Address: Torrespaseo colon what if this address is really long"
+            android:maxWidth="200dp"/>
+        <TextView
+            android:id="@+id/order_state"
+            android:textColor="@color/colorAccent"
+            android:textAllCaps="true"
+            android:layout_gravity="end"
+            android:text="Delivered" />
+
+    </GridLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
+    <GridLayout
+        android:id="@+id/detail_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="1"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+        <include layout="@layout/item_confirm_order" />
+        <include layout="@layout/item_confirm_order" />
+    </GridLayout>
+    <GridLayout
+        android:id="@+id/expand_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="1"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
+        <include layout="@layout/item_confirm_order" />
+        <include layout="@layout/item_confirm_order" />
+    </GridLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?listPreferredItemHeightSmall">
+        <Button
+            style="@style/SeeMoreButton"
+            android:visibility="gone"
+            android:id="@+id/order_expand_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_view_all"/>
+        <TextView
+            android:id="@+id/order_total"
+            android:text="Total: $349,65"
+            android:textColor="@color/textPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_margin"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

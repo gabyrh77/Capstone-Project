@@ -7,6 +7,7 @@
 package com.nanodegree.gaby.bakerylovers.backend.spi;
 
 import com.google.api.server.spi.config.Nullable;
+import com.googlecode.objectify.Key;
 import com.nanodegree.gaby.bakerylovers.backend.db.UserRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -152,6 +153,16 @@ public class UserEndpoint {
         List<UserRecord> records = ofy().load().type(UserRecord.class).limit(count).list();
         log.info("listUsers: Returned a collection of " + records.size() + " users");
         return CollectionResponse.<UserRecord>builder().setItems(records).build();
+    }
+
+    /**
+     * Delete all orders
+     *
+     */
+    @ApiMethod(name = "user.deleteAll")
+    public void deleteUsers() {
+        Iterable<Key<UserRecord>> allKeys = ofy().load().type(UserRecord.class).keys();
+        ofy().delete().keys(allKeys);
     }
 
     private UserRecord findUserByEmail(String email) {

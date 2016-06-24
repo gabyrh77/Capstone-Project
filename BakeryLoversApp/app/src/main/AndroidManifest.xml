@@ -98,6 +98,9 @@
         <service
             android:name=".services.ProductsService"
             android:exported="false" />
+        <service
+            android:name=".services.OrdersService"
+            android:exported="false" />
 
     </application>
 

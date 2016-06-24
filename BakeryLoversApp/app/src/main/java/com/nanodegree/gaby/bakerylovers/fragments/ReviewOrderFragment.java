@@ -20,6 +20,7 @@ import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.adapters.CurrentOrderAdapter;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.services.ProductsService;
+import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +75,7 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
         return new CursorLoader(getActivity(),
                 DBContract.CurrentOrderEntry.CONTENT_URI,
                 DBContract.CurrentOrderEntry.DETAIL_COLUMNS,
-                null,
+                DBContract.CurrentOrderEntry.COLUMN_USER_ID + "=" + UserService.getUserId(getActivity()),
                 null,
                 null);
     }

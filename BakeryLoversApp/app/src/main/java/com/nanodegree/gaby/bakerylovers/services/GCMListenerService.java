@@ -40,7 +40,13 @@ public class GCMListenerService extends GcmListenerService {
             if (topicName.equals("global")){
                 sendNotification(message);
             } else if (topicName.equals("products")){
-                //TODO: START SERVICE PRODUCTS
+                Intent productsIntent = new Intent(getApplicationContext(), ProductsService.class);
+                productsIntent.setAction(ProductsService.ACTION_GET);
+                getApplicationContext().startService(productsIntent);
+            } else if (topicName.equals("orders")){
+                Intent ordersIntent = new Intent(getApplicationContext(), OrdersService.class);
+                ordersIntent.setAction(OrdersService.ACTION_GET);
+                getApplicationContext().startService(ordersIntent);
             }
         } else {
             sendNotification(message);
@@ -71,6 +77,6 @@ public class GCMListenerService extends GcmListenerService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 }

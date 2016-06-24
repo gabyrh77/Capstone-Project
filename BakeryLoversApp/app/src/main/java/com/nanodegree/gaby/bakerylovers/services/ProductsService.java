@@ -22,7 +22,7 @@ public class ProductsService extends IntentService {
 
     private static final String TAG = "ProductsService";
     public static final String ACTION_GET = "com.nanodegree.gaby.bakerylovers.services.action.GET_PRODUCTS";
-    public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.DELETE";
+    public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.PRODUCT_DELETE";
 
     public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID";
 
@@ -66,7 +66,7 @@ public class ProductsService extends IntentService {
 
                 // perform bulk insert
                 if ( contentValuesVector.size() > 0 ) {
-                    Log.e(TAG, "BULK INSTERT PRODUCTS " + String.valueOf(contentValuesVector.size()));
+                    Log.e(TAG, "BULK INSERT PRODUCTS " + String.valueOf(contentValuesVector.size()));
                     ContentValues[] cvArray = new ContentValues[contentValuesVector.size()];
                     contentValuesVector.toArray(cvArray);
                     getContentResolver().bulkInsert(DBContract.ProductEntry.CONTENT_URI, cvArray);

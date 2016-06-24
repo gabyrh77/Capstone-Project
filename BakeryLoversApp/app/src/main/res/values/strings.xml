@@ -39,7 +39,11 @@
     <string name="product_added_to_cart">This product was added to your cart</string>
     <string name="msg_product_added_to_cart">You already added this to your cart.</string>
     <string name="text_select_address">Please select a deliver address to continue with your order.</string>
-
+    <string name="text_order_number">Order #%1$d</string>
+    <string name="text_order_address">Address: %1$s</string>
+    <string name="text_order_total">Total: %1$s</string>
+    <string name="text_order_delivered">Delivered</string>
+    <string name="text_order_placed">Placed</string>
 
     <!-- string related to actions -->
     <string name="action_cancel">Cancel</string>
@@ -47,6 +51,8 @@
     <string name="action_place_order">Place order</string>
     <string name="action_update">Update</string>
     <string name="action_remove">Remove</string>
+    <string name="action_view_all">View all</string>
+    <string name="action_view_less">View less</string>
 
     <!-- string related to product details -->
     <string name="label_price">Price:</string>

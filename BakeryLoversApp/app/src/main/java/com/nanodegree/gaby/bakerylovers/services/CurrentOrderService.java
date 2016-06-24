@@ -26,6 +26,7 @@ public class CurrentOrderService extends IntentService{
     public static final String PRODUCT_ID = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_ID_ORDER";
     public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
     public static final String PRODUCT_AMOUNT = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_AMOUNT_ORDER";
+    private Long userId;
     public CurrentOrderService() {
         super(TAG);
     }
@@ -33,6 +34,7 @@ public class CurrentOrderService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
+            userId = UserService.getUserId(getApplicationContext());
             final String action = intent.getAction();
             if (ACTION_PLACE.equals(action)) {
                 final String address = intent.getStringExtra(STR_ADDRESS);
@@ -55,7 +57,9 @@ public class CurrentOrderService extends IntentService{
 
     private void placeOrder(String address) {
         boolean success = false;
-        Cursor mCurrentOrder = getContentResolver().query(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry.DETAIL_COLUMNS, null, null, null);
+        Cursor mCurrentOrder = getContentResolver().query(DBContract.CurrentOrderEntry.CONTENT_URI,
+                DBContract.CurrentOrderEntry.DETAIL_COLUMNS,
+                DBContract.CurrentOrderEntry.COLUMN_USER_ID + "=" + userId, null, null);
         if (mCurrentOrder != null && mCurrentOrder.getCount() > 0) {
             ArrayList<OrderDetailObject> detailList = new ArrayList<>();
             for (int i = 0; i < mCurrentOrder.getCount(); i++) {
@@ -89,7 +93,7 @@ public class CurrentOrderService extends IntentService{
 
     private void deleteCurrentOrder() {
         try {
-            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, null, null);
+            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry.COLUMN_USER_ID + "=" + userId, null);
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }
@@ -100,8 +104,10 @@ public class CurrentOrderService extends IntentService{
             ContentValues values = new ContentValues();
             values.put(DBContract.OrderEntry.COLUMN_ORDER_ID, order.getId());
             values.put(DBContract.OrderEntry.COLUMN_TOTAL_DELIVERY, order.getTotalDelivery());
+            values.put(DBContract.OrderEntry.COLUMN_USER_ID, order.getUserId());
+            values.put(DBContract.OrderEntry.COLUMN_ADDRESS, order.getAddress());
             values.put(DBContract.OrderEntry.COLUMN_TOTAL_PRICE, order.getTotalOrder());
-            values.put(DBContract.OrderEntry.COLUMN_PLACED_DATE, order.getPlaced().toString());
+            values.put(DBContract.OrderEntry.COLUMN_PLACED_DATE, order.getPlaced().getValue());
             getContentResolver().insert(DBContract.OrderEntry.CONTENT_URI, values);
 
             List<OrderDetailObject> details = order.getDetails();
@@ -127,14 +133,16 @@ public class CurrentOrderService extends IntentService{
                     getContentResolver().bulkInsert(DBContract.OrderDetailEntry.CONTENT_URI, cvArray);
                 }
             }
-        }catch(Exception e){
+        }catch(Exception e) {
             Log.d(TAG, e.getMessage());
         }
     }
 
     private void deleteFromOrder(long id) {
         try {
-            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI, DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ?", new String[] {String.valueOf(id)});
+            getContentResolver().delete(DBContract.CurrentOrderEntry.CONTENT_URI,
+                    DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ? AND " + DBContract.CurrentOrderEntry.COLUMN_USER_ID + "= ?",
+                    new String[] {String.valueOf(id), userId.toString()});
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }
@@ -144,6 +152,7 @@ public class CurrentOrderService extends IntentService{
         try {
             ContentValues values = new ContentValues();
             values.put(DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID, id);
+            values.put(DBContract.CurrentOrderEntry.COLUMN_USER_ID, userId);
             values.put(DBContract.CurrentOrderEntry.COLUMN_AMOUNT, 1);
             values.put(DBContract.CurrentOrderEntry.COLUMN_PRICE_UND, price);
             getContentResolver().insert(DBContract.CurrentOrderEntry.CONTENT_URI, values);
@@ -156,7 +165,9 @@ public class CurrentOrderService extends IntentService{
         try {
             ContentValues values = new ContentValues();
             values.put(DBContract.CurrentOrderEntry.COLUMN_AMOUNT, amount);
-            getContentResolver().update(DBContract.CurrentOrderEntry.CONTENT_URI, values, DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ?", new String[] {String.valueOf(id)});
+            getContentResolver().update(DBContract.CurrentOrderEntry.CONTENT_URI, values,
+                    DBContract.CurrentOrderEntry.COLUMN_PRODUCT_ID + " = ? AND " + DBContract.CurrentOrderEntry.COLUMN_USER_ID + "= ?",
+                    new String[] {String.valueOf(id), userId.toString()});
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }

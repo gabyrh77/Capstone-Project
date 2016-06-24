@@ -1,11 +1,11 @@
 package com.nanodegree.gaby.bakerylovers.backend.db;
 
-import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.Serialize;
 
+import java.util.Date;
 import java.util.List;
 
 /** The Objectify object model for orders we are persisting */
@@ -16,12 +16,12 @@ public class OrderRecord {
     Long id;
     @Index
     private Long userId;
-    @Serialize
     private List<OrderDetailObject> details;
-    private DateTime delivered;
-    private DateTime placed;
+    private Date delivered;
+    private Date placed;
     private double totalOrder;
     private double totalDelivery;
+    private String address;
 
     public OrderRecord() {}
 
@@ -45,19 +45,19 @@ public class OrderRecord {
         this.details = details;
     }
 
-    public DateTime getDelivered() {
+    public Date getDelivered() {
         return delivered;
     }
 
-    public void setDelivered(DateTime delivered) {
+    public void setDelivered(Date delivered) {
         this.delivered = delivered;
     }
 
-    public DateTime getPlaced() {
+    public Date getPlaced() {
         return placed;
     }
 
-    public void setPlaced(DateTime placed) {
+    public void setPlaced(Date placed) {
         this.placed = placed;
     }
 
@@ -75,5 +75,13 @@ public class OrderRecord {
 
     public void setTotalDelivery(double totalDelivery) {
         this.totalDelivery = totalDelivery;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

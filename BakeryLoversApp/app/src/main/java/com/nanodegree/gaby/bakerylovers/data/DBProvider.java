@@ -66,7 +66,7 @@ public class DBProvider extends ContentProvider {
                 if (matcher == ORDER && selection==null) {
                     selection = DBContract.OrderEntry.COLUMN_ORDER_ID + " = "+ uri.getLastPathSegment();
                 }
-                mQueryBuilder.setTables(DBContract.OrderEntry.TABLE_NAME);
+                mQueryBuilder.setTables(DBContract.OrderEntry.DETAIL_PRODUCT_JOIN);
                 break;
             case PRODUCTS:
             case PRODUCT:

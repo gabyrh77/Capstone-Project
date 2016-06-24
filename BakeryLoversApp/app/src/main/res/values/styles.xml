@@ -51,6 +51,13 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="SeeMoreButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:drawablePadding">@dimen/small_margin</item>
+        <item name="android:drawableLeft">@drawable/ic_keyboard_arrow_down</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
