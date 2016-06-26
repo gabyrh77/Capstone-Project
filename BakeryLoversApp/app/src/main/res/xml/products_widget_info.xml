@@ -1,0 +1,10 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/products_widget_layout"
+    android:minWidth="@dimen/widget_default_width"
+    android:minHeight="@dimen/widget_default_height"
+    android:minResizeWidth="@dimen/widget_default_width"
+    android:minResizeHeight="@dimen/widget_default_height"
+    android:resizeMode="horizontal|vertical"
+    android:previewImage="@drawable/widget_preview_portrait"
+    android:updatePeriodMillis="0"
+    android:autoAdvanceViewId="@id/products_widget_list" />

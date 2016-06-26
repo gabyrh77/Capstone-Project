@@ -102,6 +102,22 @@
             android:name=".services.OrdersService"
             android:exported="false" />
 
+        <!-- Products Widget -->
+        <receiver
+            android:name=".widget.ProductsWidgetProvider"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.nanodegree.gaby.bakerylovers.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/products_widget_info" />
+        </receiver>
+        <service
+            android:name=".widget.ProductsWidgetRemoteViewsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>
