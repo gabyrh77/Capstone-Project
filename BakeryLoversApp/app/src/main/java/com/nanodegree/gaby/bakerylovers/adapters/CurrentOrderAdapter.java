@@ -41,8 +41,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_current_order_list, parent, false);
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -75,7 +74,9 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-        // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override

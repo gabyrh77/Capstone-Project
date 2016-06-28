@@ -27,6 +27,14 @@
         <item name="android:textColor">@color/textGray</item>
     </style>
 
+    <style name="Title.EmptyText" parent="Title">
+        <item name="android:textColor">@color/textGray</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
     <style name="Title.DarkGray" parent="Title">
         <item name="android:textColor">@color/textPrimary</item>
     </style>

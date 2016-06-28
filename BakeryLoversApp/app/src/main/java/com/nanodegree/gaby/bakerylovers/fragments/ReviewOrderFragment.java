@@ -28,6 +28,7 @@ import com.nanodegree.gaby.bakerylovers.services.UserService;
 public class ReviewOrderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String TAG = "ReviewOrderFragment";
     private RecyclerView mRecyclerView;
+    private View mEmptyView;
     private CurrentOrderAdapter mListAdapter;
 
     public ReviewOrderFragment() {}
@@ -45,6 +46,7 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_review_order, container, false);
+        mEmptyView = rootView.findViewById(R.id.empty_cart_view);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_order_items);
 
         // use this setting to improve performance if you know that changes
@@ -57,7 +59,7 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
         int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
 
         // specify an adapter (see also next example)
-        mListAdapter = new CurrentOrderAdapter(getActivity(), null, choiceMode);
+        mListAdapter = new CurrentOrderAdapter(getActivity(), mEmptyView, choiceMode);
         mRecyclerView.setAdapter(mListAdapter);
 
         return rootView;

@@ -45,8 +45,9 @@
     <string name="text_order_total">Total: %1$s</string>
     <string name="text_order_delivered">Delivered</string>
     <string name="text_order_placed">Placed</string>
-    <string name="text_orders_empty">You don\'t have orders yet.</string>
+    <string name="text_orders_empty">You don\'t have any orders yet.</string>
     <string name="text_products_empty">No products are available for the moment.</string>
+    <string name="text_cart_empty">Your cart is empty.</string>
 
     <!-- string related to actions -->
     <string name="action_cancel">Cancel</string>

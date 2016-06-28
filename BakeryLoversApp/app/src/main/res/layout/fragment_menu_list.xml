@@ -20,4 +20,12 @@
         android:onClick="reviewOrderClick"
         android:src="@drawable/ic_action_shop"
         android:contentDescription="@string/action_review_order"/>
+
+    <TextView
+        style="@style/Title.EmptyText"
+        android:id="@+id/empty_menu_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="@string/text_products_empty"/>
 </RelativeLayout>

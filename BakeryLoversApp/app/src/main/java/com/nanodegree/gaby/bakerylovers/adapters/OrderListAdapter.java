@@ -131,7 +131,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     public void swapCursor(Cursor cursor) {
         mOrderItems.clear();
-        if (cursor != null && cursor.getCount() > 0) {
+        boolean anyOrders = cursor != null && cursor.getCount() > 0;
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(anyOrders ? View.GONE : View.VISIBLE);
+        }
+        if (anyOrders) {
             long orderId = 0, previousOrderId;
             for (int i = 0; i < cursor.getCount(); i++) {
                 if (i == 0) {
@@ -171,8 +175,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 mOrderItems.add(newItem);
                 notifyItemChanged(mOrderItems.size() - 1);
             }
-        } else {
-            //TODO: SHOW EMPTY VIEW
         }
     }
 

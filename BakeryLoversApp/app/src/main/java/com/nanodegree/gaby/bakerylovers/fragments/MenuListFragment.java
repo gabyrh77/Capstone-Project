@@ -26,6 +26,7 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int LOADER_PRODUCTS = 0;
     private static final int LOADER_CART = 1;
     private RecyclerView mRecyclerView;
+    private View mEmptyView;
     private MenuListAdapter mListAdapter;
     private FloatingActionButton mReviewOrderButton;
 
@@ -35,7 +36,7 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_menu_list, container, false);
-
+        mEmptyView = rootView.findViewById(R.id.empty_menu_view);
         mReviewOrderButton = (FloatingActionButton) rootView.findViewById(R.id.review_order_button);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_menu_view);
         mRecyclerView.setHasFixedSize(true);
@@ -43,9 +44,7 @@ public class MenuListFragment extends Fragment implements LoaderManager.LoaderCa
 
         int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
 
-        //TODO: add empty view
-
-        mListAdapter = new MenuListAdapter(getActivity(), null, choiceMode);
+        mListAdapter = new MenuListAdapter(getActivity(), mEmptyView, choiceMode);
         mRecyclerView.setAdapter(mListAdapter);
 
         return rootView;

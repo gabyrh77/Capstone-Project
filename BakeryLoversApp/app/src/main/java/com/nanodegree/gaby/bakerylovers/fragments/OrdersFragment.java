@@ -21,9 +21,10 @@ import com.nanodegree.gaby.bakerylovers.services.UserService;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrdersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class OrdersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private RecyclerView mRecyclerView;
     private OrderListAdapter mListAdapter;
+    private View mEmptyView;
     private Long userID;
 
     public OrdersFragment() {
@@ -38,16 +39,12 @@ public class OrdersFragment extends Fragment implements LoaderManager.LoaderCall
         View rootView = inflater.inflate(R.layout.fragment_orders, container, false);
 
         userID = UserService.getUserId(getActivity());
-
+        mEmptyView = rootView.findViewById(R.id.empty_order_view);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.list_orders);
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
-
-        //TODO: add empty view
-
-        mListAdapter = new OrderListAdapter(getActivity(), null);
+        mListAdapter = new OrderListAdapter(getActivity(), mEmptyView);
         mRecyclerView.setAdapter(mListAdapter);
 
         return rootView;

@@ -85,7 +85,9 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-       // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
