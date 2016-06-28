@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.activities.MainActivity;
@@ -71,11 +70,11 @@ public class ProductsWidgetProvider extends AppWidgetProvider {
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.products_widget_list);
         } else if (ACTION_PRODUCT_DETAIL.equals(intent.getAction())) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            long viewIndex = intent.getLongExtra(EXTRA_ID, 0);
-            //TODO: opend product detail intent
-            Toast.makeText(context, "Touched prodcut " + String.valueOf(viewIndex), Toast.LENGTH_SHORT).show();
+            long productId = intent.getLongExtra(EXTRA_ID, 0);
+            Intent detailIntent = new Intent(context, MainActivity.class);
+            detailIntent.putExtra(MainActivity.ARG_PRODUCT_ID, productId);
+            detailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(detailIntent);
         }
         super.onReceive(context, intent);
     }

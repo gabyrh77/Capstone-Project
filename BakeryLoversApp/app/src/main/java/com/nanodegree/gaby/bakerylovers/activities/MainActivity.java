@@ -39,11 +39,13 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final String ARG_SELECTED_FRAGMENT = "ARG_SF";
+    public static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
     private static final String TAG_FRAGMENT_LIST_MENU = "TAG_LIST_MENU";
     private static final String TAG_FRAGMENT_ORDERS = "TAG_ORDERS";
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private int mSelectedFragment;
+    private int mProductId;
     private UserService mUserService;
     private NavigationView mNavigationView;
     private CoordinatorLayout mCoordinatorView;
@@ -84,6 +86,9 @@ public class MainActivity extends AppCompatActivity
             mSelectedFragment = 0;
             setFragment(R.id.nav_main, R.id.main_content, null);
             mNavigationView.setCheckedItem(R.id.nav_main);
+            if (getIntent().getLongExtra(ARG_PRODUCT_ID, 0) > 0) {
+                openProductDetail(getIntent().getLongExtra(ARG_PRODUCT_ID, 0));
+            }
         }
 
         if (checkPlayServices()) {
@@ -258,16 +263,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProductItemClick(long productId) {
-        Bundle args = ProductDetailFragment.newInstance(productId);
-
-       /* if(findViewById(R.id.main_detail_content) != null){
-            id = R.id.main_detail_content;
-            setFragment(R.id.nav_product_detail, id, args);
-        }*/
-
-       Intent productDetail = new Intent(this, ProductDetailActivity.class);
-       productDetail.putExtras(args);
-       startActivity(productDetail);
+        openProductDetail(productId);
     }
 
     public void reviewOrderClick(View view) {
@@ -287,5 +283,19 @@ public class MainActivity extends AppCompatActivity
         } else {
             Snackbar.make(mCoordinatorView, getString(R.string.msg_product_added_to_cart), Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private void openProductDetail(long productId) {
+        Bundle args = ProductDetailFragment.newInstance(productId);
+
+       /* if(findViewById(R.id.main_detail_content) != null) {
+            mProductId = productId;
+            id = R.id.main_detail_content;
+            setFragment(R.id.nav_product_detail, id, args);
+        }*/
+
+        Intent productDetail = new Intent(this, ProductDetailActivity.class);
+        productDetail.putExtras(args);
+        startActivity(productDetail);
     }
 }
