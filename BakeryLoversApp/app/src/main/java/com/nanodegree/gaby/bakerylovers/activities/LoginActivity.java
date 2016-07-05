@@ -43,6 +43,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.nanodegree.gaby.bakerylovers.R;
+import com.nanodegree.gaby.bakerylovers.data.ProfileQuery;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == EditorInfo.IME_ACTION_DONE) {
                     attemptLogin();
                     return true;
                 }
@@ -108,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         mPhoneNumberView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.register || id == EditorInfo.IME_NULL) {
+                if (id == EditorInfo.IME_ACTION_DONE) {
                     registerAccount();
                     return true;
                 }
@@ -191,7 +192,6 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
     }
 
     private void toggleUIMode() {
-        Log.d(TAG, "called toggleUIMode");
         switch (mUIMode){
             case REGISTER_MODE:
                 mUIMode = LOGIN_MODE;
@@ -204,9 +204,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         updateUIMode();
     }
 
-    private void hideKeyboard(){
-        Log.d(TAG, "called hideKeyboard");
-        // Check if no view has focus:
+    private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
             view.clearFocus();
@@ -216,7 +214,6 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
     }
 
     private void updateUIMode() {
-        Log.d(TAG, "called updateUIMode");
         if (mUIMode == REGISTER_MODE) {
             mPassword2View.setVisibility(View.VISIBLE);
             mPhoneNumberView.setVisibility(View.VISIBLE);
@@ -229,10 +226,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
                 }
             });
             mRegisterView.setVisibility(View.GONE);
-            mPasswordView.setImeActionLabel(null, EditorInfo.IME_ACTION_NEXT);
             mPasswordView.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mPhoneNumberView.setImeActionLabel(getString(R.string.action_register), R.id.register);
-            mPhoneNumberView.setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED);
         } else {
             mPhoneNumberView.setVisibility(View.GONE);
             mFullNameView.setVisibility(View.GONE);
@@ -245,11 +239,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
                 }
             });
             mRegisterView.setVisibility(View.VISIBLE);
-            mPasswordView.setImeActionLabel(getString(R.string.action_sign_in), R.id.login);
-            mPasswordView.setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED);
-            mPhoneNumberView.setImeActionLabel(null, EditorInfo.IME_NULL);
-            mPhoneNumberView.setImeOptions(EditorInfo.IME_ACTION_NONE);
-
+            mPasswordView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         }
     }
 
@@ -502,30 +492,18 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Log.d(TAG, "token: " + acct.getIdToken());
             mUserService.loginGoogle(acct.getEmail(), acct.getDisplayName(),acct.getIdToken(), "");
         } else {
             Snackbar.make(mCoordinatorView, R.string.error_unable_to_register, Snackbar.LENGTH_LONG);
         }
     }
 
-    private void openMainActivity(){
+    private void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     @Override

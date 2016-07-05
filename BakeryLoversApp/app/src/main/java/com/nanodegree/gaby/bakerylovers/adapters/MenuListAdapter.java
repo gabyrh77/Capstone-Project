@@ -2,7 +2,6 @@ package com.nanodegree.gaby.bakerylovers.adapters;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +20,12 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
     final private View mEmptyView;
     final private Activity mContext;
     final private MenuListAdapterOnClickHandler mClickHandler;
-    final private ItemChoiceManager mICM;
 
-    public MenuListAdapter(Activity context, View emptyView, int choiceMode) {
+    public MenuListAdapter(Activity context, View emptyView) {
         super();
         mContext = context;
         mEmptyView = emptyView;
         mClickHandler = (MenuListAdapterOnClickHandler) mContext;
-        mICM = new ItemChoiceManager(this);
-        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -68,18 +64,6 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
                     .placeholder(R.drawable.no_image)
                     .into(holder.productImage);
         }
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        mICM.onRestoreInstanceState(savedInstanceState);
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        mICM.onSaveInstanceState(outState);
-    }
-
-    public int getSelectedItemPosition() {
-        return mICM.getSelectedItemPosition();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -121,7 +105,6 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
                 mClickHandler.onToggleOrderItemClick((Boolean) view.getTag(), id, price);
             } else {
                 mClickHandler.onProductItemClick(id);
-                mICM.onClick(this);
             }
         }
     }

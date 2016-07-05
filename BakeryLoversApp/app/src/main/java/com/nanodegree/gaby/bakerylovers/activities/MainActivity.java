@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -32,6 +31,7 @@ import com.nanodegree.gaby.bakerylovers.services.GCMRegistrationService;
 import com.nanodegree.gaby.bakerylovers.services.OrdersService;
 import com.nanodegree.gaby.bakerylovers.services.ProductsService;
 import com.nanodegree.gaby.bakerylovers.services.UserService;
+import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserService.UserServiceListener,
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_FRAGMENT_DETAIL = "TAG_DETAIL";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private int mSelectedFragment;
-    private int mProductId;
     private UserService mUserService;
     private NavigationView mNavigationView;
     private CoordinatorLayout mCoordinatorView;
@@ -57,15 +56,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // get products on the background
-        Intent productsIntent = new Intent(this, ProductsService.class);
-        productsIntent.setAction(ProductsService.ACTION_GET);
-        startService(productsIntent);
+        fetchProducts();
 
-        // get orders on the background
-        Intent ordersIntent = new Intent(this, OrdersService.class);
-        ordersIntent.setAction(OrdersService.ACTION_GET);
-        startService(ordersIntent);
+       fetchOrders();
 
         mUserService = new UserService(this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.coordinator_main_view);
@@ -111,12 +104,26 @@ public class MainActivity extends AppCompatActivity
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.i(TAG, "This device is not supported.");
+                Log.i(TAG, "Device is not supported.");
                 finish();
             }
             return false;
         }
         return true;
+    }
+
+    private void fetchProducts() {
+        // get products on the background
+        Intent productsIntent = new Intent(this, ProductsService.class);
+        productsIntent.setAction(ProductsService.ACTION_GET);
+        startService(productsIntent);
+    }
+
+    private void fetchOrders() {
+        // get orders on the background
+        Intent ordersIntent = new Intent(this, OrdersService.class);
+        ordersIntent.setAction(OrdersService.ACTION_GET);
+        startService(ordersIntent);
     }
 
     public void setTitle(int titleId) {
@@ -207,6 +214,20 @@ public class MainActivity extends AppCompatActivity
                     navEmailText.setText(mUserService.getUserEmail());
                 }
             }
+
+            if (Utils.isNetworkAvailable(this)) {
+                if (mUserService.isPendingProductsUpdate()) {
+                    fetchProducts();
+                }
+            } else {
+                Snackbar.make(mCoordinatorView, getString(R.string.text_network), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.action_settings), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                        }
+                }).show();
+            }
         }
     }
 
@@ -287,12 +308,6 @@ public class MainActivity extends AppCompatActivity
 
     private void openProductDetail(long productId) {
         Bundle args = ProductDetailFragment.newInstance(productId);
-
-       /* if(findViewById(R.id.main_detail_content) != null) {
-            mProductId = productId;
-            id = R.id.main_detail_content;
-            setFragment(R.id.nav_product_detail, id, args);
-        }*/
 
         Intent productDetail = new Intent(this, ProductDetailActivity.class);
         productDetail.putExtras(args);

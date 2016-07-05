@@ -7,4 +7,6 @@
     <color name="textPrimary">#212121</color>
     <color name="textGray">#727272</color>
     <color name="colorDivider">#b6b6b6</color>
+    <color name="colorHeader">#ffccbc</color>
+    <color name="bgLight">#eeeeee</color>
 </resources>

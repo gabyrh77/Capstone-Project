@@ -65,7 +65,6 @@ public class DBContract {
     }
 
     public static final class ProductEntry implements BaseColumns {
-        //table name
         public static final String TABLE_NAME = "product_table";
 
         //columns
@@ -76,6 +75,8 @@ public class DBContract {
         public static final String COLUMN_AVAILABLE = "product_available";
         public static final String COLUMN_NUTRITIONAL_VALUE = "product_nut_value";
         public static final String COLUMN_PHOTO_URL = "product_photo_url";
+
+        public static final String DEFAULT_ORDER = COLUMN_NAME + " ASC";
 
         // join with current table
         public static final String PRODUCT_CURRENT_JOIN = TABLE_NAME + " LEFT OUTER JOIN " + CurrentOrderEntry.TABLE_NAME +

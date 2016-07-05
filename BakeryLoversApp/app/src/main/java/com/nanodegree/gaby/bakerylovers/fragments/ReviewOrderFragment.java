@@ -56,10 +56,8 @@ public class ReviewOrderFragment extends Fragment implements LoaderManager.Loade
         // use a linear layout manager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        int choiceMode = getResources().getInteger(R.integer.item_choice_mode);
-
         // specify an adapter (see also next example)
-        mListAdapter = new CurrentOrderAdapter(getActivity(), mEmptyView, choiceMode);
+        mListAdapter = new CurrentOrderAdapter(getActivity(), mEmptyView);
         mRecyclerView.setAdapter(mListAdapter);
 
         return rootView;

@@ -2,28 +2,21 @@ package com.nanodegree.gaby.bakerylovers.adapters;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
 public class ConfirmOrderAdapter extends RecyclerView.Adapter<ConfirmOrderAdapter.ViewHolder>{
     private Cursor mCursor;
-    final private Activity mContext;
 
     public ConfirmOrderAdapter(Activity context) {
         super();
-        mContext = context;
     }
 
     @Override

@@ -173,12 +173,6 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
     @Override
     public void onProductItemClick(long productId) {
         Bundle args = ProductDetailFragment.newInstance(productId);
-
-       /* if(findViewById(R.id.main_detail_content) != null){
-            id = R.id.main_detail_content;
-            setFragment(R.id.nav_product_detail, id, args);
-        }*/
-
         Intent productDetail = new Intent(this, ProductDetailActivity.class);
         productDetail.putExtras(args);
         startActivity(productDetail);
@@ -249,7 +243,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
                     }).create();
             dialog.show();
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_LOCATION);
+            requestPermissions(new String[]{ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
         return false;
     }
@@ -274,7 +268,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
                 mDeliverLocation = place.getName().toString();
                 setFragment(TAG_FRAGMENT_CONFIRM_ORDER, ConfirmOrderFragment.newInstanceBundle(mDeliverLocation));
             }else {
-                Toast.makeText(getApplicationContext(), "Please choose you deliver location", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.text_select_address), Toast.LENGTH_LONG).show();
             }
         }
     }

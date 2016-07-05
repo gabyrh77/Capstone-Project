@@ -53,17 +53,19 @@ public class OrdersService extends IntentService {
                 Vector<ContentValues> contentValuesVector = new Vector<>(orders.size());
                 ArrayList<ContentValues> detailsValuesArray = new ArrayList<>();
                 for (OrderRecord orderResponse: orders) {
-                    ContentValues productValues = new ContentValues();
-                    productValues.put(DBContract.OrderEntry.COLUMN_ORDER_ID, orderResponse.getId());
-                    productValues.put(DBContract.OrderEntry.COLUMN_USER_ID, orderResponse.getUserId());
+                    ContentValues orderValues = new ContentValues();
+                    orderValues.put(DBContract.OrderEntry.COLUMN_ORDER_ID, orderResponse.getId());
+                    orderValues.put(DBContract.OrderEntry.COLUMN_USER_ID, orderResponse.getUserId());
                     if (orderResponse.getDelivered() != null) {
-                        productValues.put(DBContract.OrderEntry.COLUMN_DELIVERED_DATE, orderResponse.getDelivered().getValue());
+                        orderValues.put(DBContract.OrderEntry.COLUMN_DELIVERED_DATE, orderResponse.getDelivered().getValue());
                     }
-                    productValues.put(DBContract.OrderEntry.COLUMN_PLACED_DATE, orderResponse.getPlaced().getValue());
-                    productValues.put(DBContract.OrderEntry.COLUMN_TOTAL_DELIVERY, orderResponse.getTotalDelivery());
-                    productValues.put(DBContract.OrderEntry.COLUMN_TOTAL_PRICE, orderResponse.getTotalOrder());
+                    orderValues.put(DBContract.OrderEntry.COLUMN_PLACED_DATE, orderResponse.getPlaced().getValue());
+                    orderValues.put(DBContract.OrderEntry.COLUMN_TOTAL_DELIVERY, orderResponse.getTotalDelivery());
+                    orderValues.put(DBContract.OrderEntry.COLUMN_TOTAL_PRICE, orderResponse.getTotalOrder());
+                    orderValues.put(DBContract.OrderEntry.COLUMN_ADDRESS, orderResponse.getAddress());
+
                     //add to vector
-                    contentValuesVector.add(productValues);
+                    contentValuesVector.add(orderValues);
 
                     //content values details
                     if (orderResponse.getDetails() != null) {

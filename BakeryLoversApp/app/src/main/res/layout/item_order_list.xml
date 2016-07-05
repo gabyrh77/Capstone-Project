@@ -17,28 +17,30 @@
         <TextView
             android:id="@+id/order_placed"
             android:textColor="@color/textPrimary"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:text="Tuesday, 22 May 09:00AM"/>
+            android:textAlignment="viewStart"
+            android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
             android:id="@+id/order_number"
-            android:text="Order #1"
-            android:layout_gravity="end" />
+            android:gravity="end"
+            android:textAlignment="viewEnd"
+            android:layout_gravity="end|fill_horizontal" />
         <TextView
             android:id="@+id/order_address"
-            android:text="Address: Torrespaseo colon what if this address is really long"
-            android:maxWidth="200dp"/>
+            android:textAlignment="viewStart"
+            android:maxWidth="@dimen/address_column_width"/>
         <TextView
             android:id="@+id/order_state"
             android:textColor="@color/colorAccent"
             android:textAllCaps="true"
-            android:layout_gravity="end"
-            android:text="Delivered" />
+            android:gravity="end"
+            android:textAlignment="viewEnd"
+            android:layout_gravity="end|fill_horizontal" />
 
     </GridLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/divider_height"
         android:background="@color/colorDivider" />
     <GridLayout
         android:id="@+id/detail_view"
@@ -62,7 +64,7 @@
     </GridLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/divider_height"
         android:background="@color/colorDivider" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,22 +72,21 @@
         android:minHeight="?listPreferredItemHeightSmall">
         <Button
             style="@style/SeeMoreButton"
-            android:visibility="gone"
             android:id="@+id/order_expand_button"
             android:layout_width="0dp"
+            android:layout_gravity="center_vertical|start"
             android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
             android:layout_weight="1"
             android:text="@string/action_view_all"/>
         <TextView
             android:id="@+id/order_total"
-            android:text="Total: $349,65"
             android:textColor="@color/textPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="@dimen/small_margin"
             android:layout_weight="1"
-            android:gravity="right"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical|end"/>
     </LinearLayout>
 
     </LinearLayout>

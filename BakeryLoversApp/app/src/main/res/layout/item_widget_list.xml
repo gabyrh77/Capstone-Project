@@ -7,36 +7,37 @@
 
         <ImageView
             android:id="@+id/widget_item_product_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/small_item_size"
+            android:layout_height="@dimen/small_item_size"
             android:layout_alignParentStart="true"
             android:layout_gravity="center_horizontal"
             android:scaleType="fitCenter"
+            android:contentDescription="@string/title_product_image"
             android:src="@drawable/no_image" />
 
         <TextView
             android:id="@+id/widget_item_product_name_text"
             android:paddingStart="@dimen/small_margin"
+            android:paddingEnd="@dimen/small_margin"
             android:textAppearance="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/widget_item_product_image"
-            android:text="Moka Torte"/>
+            android:layout_toEndOf="@+id/widget_item_product_image" />
         <TextView
             android:id="@+id/widget_item_product_price_text"
             android:paddingStart="@dimen/small_margin"
+            android:paddingEnd="@dimen/small_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/widget_item_product_image"
-            android:layout_below="@+id/widget_item_product_name_text"
-            android:text="C 5.000" />
+            android:layout_below="@+id/widget_item_product_name_text" />
 
         <TextView
             android:id="@+id/widget_item_product_nutritional_text"
             android:paddingStart="@dimen/small_margin"
+            android:paddingEnd="@dimen/small_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="500 Calories"
             android:layout_below="@+id/widget_item_product_price_text"
             android:layout_toEndOf="@+id/widget_item_product_image" />
 </RelativeLayout>

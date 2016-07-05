@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/bgLight</item>
         <item name="android:textColorPrimaryInverse">@color/textPrimary</item>
         <item name="android:textColorSecondaryInverse">@color/colorPrimaryLight</item>
     </style>
@@ -63,7 +64,7 @@
         <item name="android:textAlignment">textStart</item>
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:drawablePadding">@dimen/small_margin</item>
-        <item name="android:drawableLeft">@drawable/ic_keyboard_arrow_down</item>
+        <item name="android:drawableStart">@drawable/ic_keyboard_arrow_down</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

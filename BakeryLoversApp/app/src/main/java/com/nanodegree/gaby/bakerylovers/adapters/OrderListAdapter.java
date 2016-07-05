@@ -2,7 +2,6 @@ package com.nanodegree.gaby.bakerylovers.adapters;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +10,11 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.util.Util;
 import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
 import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,13 +26,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     private List<OrderItem> mOrderItems;
     final private View mEmptyView;
     final private Activity mContext;
-    final int MAX_DETAIL_VIEWS = 2;
+    final int MAX_DETAIL_VIEWS;
+    final int LAYOUT_DIRECTION;
 
     public OrderListAdapter(Activity context, View emptyView) {
         super();
         mContext = context;
         mEmptyView = emptyView;
         mOrderItems = new ArrayList<>();
+        MAX_DETAIL_VIEWS = context.getResources().getInteger(R.integer.limit_order_details);
+        LAYOUT_DIRECTION = context.getResources().getConfiguration().getLayoutDirection();
     }
 
     @Override
@@ -51,8 +51,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (mOrderItems.size() > position) {
             OrderItem item = mOrderItems.get(position);
-            holder.orderNumber.setText(mContext.getString(R.string.text_order_number, item.getOrderId()));
-            holder.orderTotal.setText(mContext.getString(R.string.text_order_total,
+            holder.orderNumber.setText(mContext.getString(R.string.label_order_number, item.getOrderId()));
+            holder.orderTotal.setText(mContext.getString(R.string.label_total_with_var,
                     Utils.getCurrencyFormatted(item.getTotalOrder())));
             if (item.getDeliveredDate() == null) {
                 holder.orderState.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
@@ -61,7 +61,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 holder.orderState.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
                 holder.orderState.setText(mContext.getString(R.string.text_order_delivered));
             }
-            holder.orderAddress.setText(mContext.getString(R.string.text_order_address, item.getAddress()));
+            holder.orderAddress.setText(mContext.getString(R.string.label_address_with_var, item.getAddress()));
             holder.orderPlaced.setText(item.placedDate);
             holder.toggleExpandButton.setTag(position);
             holder.detailView.removeAllViews();
@@ -113,11 +113,19 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             if (needExpandView) {
                 holder.toggleExpandButton.setVisibility(View.VISIBLE);
                 if (item.isExpanded()) {
-                    holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_keyboard_arrow_up, 0, 0, 0);
+                    if (LAYOUT_DIRECTION == View.LAYOUT_DIRECTION_LTR) {
+                        holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_keyboard_arrow_up, 0, 0, 0);
+                    } else {
+                        holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds( 0, 0, R.drawable.ic_keyboard_arrow_up, 0);
+                    }
                     holder.toggleExpandButton.setText(mContext.getString(R.string.action_view_less));
                     holder.expandView.setVisibility(View.VISIBLE);
                 } else {
-                    holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_keyboard_arrow_down, 0, 0, 0);
+                    if (LAYOUT_DIRECTION == View.LAYOUT_DIRECTION_LTR) {
+                        holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_keyboard_arrow_down, 0, 0, 0);
+                    } else {
+                        holder.toggleExpandButton.setCompoundDrawablesWithIntrinsicBounds( 0, 0, R.drawable.ic_keyboard_arrow_down, 0);
+                    }
                     holder.toggleExpandButton.setText(mContext.getString(R.string.action_view_all));
                     holder.expandView.setVisibility(View.GONE);
                 }

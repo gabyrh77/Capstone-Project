@@ -2,9 +2,7 @@ package com.nanodegree.gaby.bakerylovers.adapters;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +21,12 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
     final private View mEmptyView;
     final private Activity mContext;
     final private CurrentOrderAdapterOnClickHandler mClickHandler;
-    final private ItemChoiceManager mICM;
 
-
-    public CurrentOrderAdapter(Activity context, View emptyView, int choiceMode) {
+    public CurrentOrderAdapter(Activity context, View emptyView) {
         super();
         mContext = context;
         mEmptyView = emptyView;
         mClickHandler = (CurrentOrderAdapterOnClickHandler) mContext;
-        mICM = new ItemChoiceManager(this);
-        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -57,18 +51,6 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
                     .placeholder(R.drawable.no_image)
                     .into(holder.productImage);
         }
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        mICM.onRestoreInstanceState(savedInstanceState);
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        mICM.onSaveInstanceState(outState);
-    }
-
-    public int getSelectedItemPosition() {
-        return mICM.getSelectedItemPosition();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -116,7 +98,6 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
                 mClickHandler.onDeleteProductClick(id);
             }else {
                 mClickHandler.onProductItemClick(id);
-                mICM.onClick(this);
             }
         }
     }

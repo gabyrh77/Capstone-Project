@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">Bakery Lovers</string>
+    <string name="title_products_widget">Productos Bakery Lovers</string>
+    <string name="title_fragment_main">Explora Nuestro Menú</string>
+    <string name="title_fragment_product">Detalle del producto</string>
+    <string name="title_fragment_order">Órdenes</string>
+    <string name="title_fragment_review_order">Cesta de compra</string>
+    <string name="title_fragment_confirm">Confirme su pedido</string>
+    <string name="title_update_amount_order">Cuántos?</string>
+    <string name="title_product_image">Imagen del producto</string>
+    <string name="title_product_amount_edit">Editar la cantidad</string>
+    <string name="title_browse_menu">Explorar nuestro menú</string>
+    <string name="title_your_orders">Pedidos</string>
+    <string name="title_account_section">Cuenta</string>
+    <string name="title_logout">Cerrar sesión</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Correo electrónico</string>
+    <string name="prompt_password">Clave</string>
+    <string name="prompt_password_repeat">Repita su clave</string>
+    <string name="prompt_full_name">Nombre completo</string>
+    <string name="prompt_phone_number">Número de teléfono</string>
+    <string name="action_sign_in">Iniciar sesión</string>
+    <string name="action_register">Registrarse</string>
+    <string name="action_review_order">Revisar su orden</string>
+    <string name="error_invalid_email">Correl electrónico inválido</string>
+    <string name="error_invalid_password">Clave muy corta</string>
+    <string name="error_repeated_password">La clave no concuerda con la anterior</string>
+    <string name="error_incorrect_password">Clave incorrecta</string>
+    <string name="error_unable_to_register">Algo salió mal con su proceso de registro.</string>
+    <string name="error_unable_to_login">Algo salió mal con su inicio de sesión.</string>
+    <string name="error_field_required">Campo requerido</string>
+    <string name="permission_rationale">El permiso de contactos es requerido para autocompletar su correo electrónico.</string>
+    <string name="permission_location">Necesitamos el permiso de ubicación para entregar su pedido.</string>
+    <string name="text_new_user">Usuario nuevo?</string>
+    <string name="text_click_here">Presione aquí.</string>
+
+
+    <!-- string related to main activities -->
+    <string name="error_unable_to_logout">Algo salió mal con el proceso de cerrar sesión.</string>
+    <string name="navigation_drawer_open">Abrir menú vertical</string>
+    <string name="navigation_drawer_close">Cerrar menú vertical</string>
+    <string name="navigation_profile_photo_desc">Foto de perfil</string>
+    <string name="product_not_available">Producto no disponible</string>
+    <string name="product_add_to_cart">Añadir a su cesta de compra</string>
+    <string name="product_added_to_cart">Producto añadido a su cesta de compra</string>
+    <string name="msg_product_added_to_cart">Este producto ya se encuentra en su cesta de compra.</string>
+    <string name="text_select_address">Por favor seleccione su ubicación para continuar con el proceso de compra.</string>
+
+    <string name="text_order_delivered">Entregado</string>
+    <string name="text_order_placed">Realizado</string>
+    <string name="text_orders_empty">Usted no ha realizado ningún pedido aún.</string>
+    <string name="text_products_empty">No se encuentran productos displonibles por el momento.</string>
+    <string name="text_cart_empty">Su cesta de compra está vacía.</string>
+
+    <!-- string related to actions -->
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_location">Seleccionar dirección de entrega</string>
+    <string name="action_place_order">Realizar el pedido</string>
+    <string name="action_update">Actualizar</string>
+    <string name="action_remove">Remover</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_view_all">Ver todo</string>
+    <string name="action_view_less">Ver menos</string>
+    <string name="action_settings">Configuración</string>
+    <string name="text_network">No está conectado a internet, intente revisando su configuración.</string>
+
+    <!-- string related to product details -->
+    <string name="label_price">Precio:</string>
+    <string name="label_calories">Calorias:</string>
+    <string name="label_price_with_var">Precio: %1$s</string>
+    <string name="label_calories_with_var">Calorias: %1$s</string>
+    <string name="label_order_number">Pedido #%1$d</string>
+    <string name="label_address_with_var">Dirección: %1$s</string>
+    <string name="label_address">Dirección:</string>
+    <string name="label_items_subtotal">Subtotal productos:</string>
+    <string name="label_delivery">Costo de entrega:</string>
+    <string name="label_total_items">Total productos:</string>
+    <string name="label_total_with_var">Total: %1$s</string>
+    <string name="label_total_order">Total pedido:</string>
+    <string name="label_description">Descripción</string>
+    <string name="label_qty">Cant.</string>
+    <string name="label_subtotal">Subtotal</string>
+
+</resources>
