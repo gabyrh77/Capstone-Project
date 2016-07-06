@@ -64,10 +64,10 @@ public class RegistrationEndpoint {
         }
         RegistrationRecord record = new RegistrationRecord();
         record.setRegId(regId);
-        record.setUser(Key.create(user));
+        record.setUserId(user.getId());
         ofy().save().entity(record).now();
         log.info("Device " + regId + " registered was successful");
-        log.info("Device " + regId + " linked to user " + user.getEmail());
+        log.info("Device " + regId + " linked to user " + user.getId());
     }
 
     /**

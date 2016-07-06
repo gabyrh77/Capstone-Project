@@ -4,6 +4,8 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.IntDef;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.nanodegree.gaby.bakerylovers.MainApplication;
@@ -11,13 +13,18 @@ import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderDetailObject;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderDetailsWrapper;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderRecord;
 import com.nanodegree.gaby.bakerylovers.data.DBContract;
+import com.nanodegree.gaby.bakerylovers.utils.Utils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 public class CurrentOrderService extends IntentService{
     private static final String TAG = "CurrentOrderService";
+    public static final String ARG_STATUS = "com.nanodegree.gaby.bakerylovers.services.extra.CURRENT_ORDER_SERVICE_STATUS";
+    public static final String ACTION_SERVICE_STATUS = "com.nanodegree.gaby.bakerylovers.services.action.CURRENT_ORDER_SERVICE_STATUS";
     public static final String ACTION_ADD = "com.nanodegree.gaby.bakerylovers.services.action.ADD_TO_ORDER";
     public static final String ACTION_UPDATE = "com.nanodegree.gaby.bakerylovers.services.action.UPDATE_ORDER";
     public static final String ACTION_PLACE = "com.nanodegree.gaby.bakerylovers.services.action.PLACE_ORDER";
@@ -27,6 +34,14 @@ public class CurrentOrderService extends IntentService{
     public static final String PRODUCT_PRICE = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_PRICE_ORDER";
     public static final String PRODUCT_AMOUNT = "com.nanodegree.gaby.bakerylovers.services.extra.PRODUCT_AMOUNT_ORDER";
     private Long userId;
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({STATUS_NO_NETWORK, STATUS_ERROR, STATUS_OK})
+    public @interface CurrentOrderServiceStatus {}
+    public static final int STATUS_NO_NETWORK = 0;
+    public static final int STATUS_ERROR = 1;
+    public static final int STATUS_OK = 2;
+
+
     public CurrentOrderService() {
         super(TAG);
     }
@@ -82,13 +97,21 @@ public class CurrentOrderService extends IntentService{
                     success = true;
                     deleteCurrentOrder();
                     addNewOrder(order);
-
                 }
             }catch (Exception e) {
                 Log.d(TAG, e.getMessage());
             }
         }
-        //TODO: send broadcast to activity
+
+        if (success) {
+            sendStatusBroadcast(STATUS_OK);
+        } else {
+            if (Utils.isNetworkAvailable(getApplicationContext())) {
+                sendStatusBroadcast(STATUS_ERROR);
+            } else {
+                sendStatusBroadcast(STATUS_NO_NETWORK);
+            }
+        }
     }
 
     private void deleteCurrentOrder() {
@@ -171,5 +194,11 @@ public class CurrentOrderService extends IntentService{
         }catch(Exception e){
             Log.d(TAG, e.getMessage());
         }
+    }
+
+    private void sendStatusBroadcast(@CurrentOrderServiceStatus int status){
+        Intent messageIntent = new Intent(ACTION_SERVICE_STATUS);
+        messageIntent.putExtra(ARG_STATUS, status);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
     }
 }

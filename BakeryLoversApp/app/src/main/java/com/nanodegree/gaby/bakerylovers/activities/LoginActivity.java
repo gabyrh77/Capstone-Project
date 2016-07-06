@@ -306,21 +306,10 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email))
-
-        // Check for a valid password.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!isPasswordValid(password)){
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        // Check for a valid name.
+        if (TextUtils.isEmpty(name)) {
+            mFullNameView.setError(getString(R.string.error_field_required));
+            focusView = mFullNameView;
             cancel = true;
         }
 
@@ -335,10 +324,25 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
             cancel = true;
         }
 
-        // Check for a valid name.
-        if (TextUtils.isEmpty(name)) {
-            mFullNameView.setError(getString(R.string.error_field_required));
-            focusView = mFullNameView;
+        // Check for a valid password.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)){
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
             cancel = true;
         }
 
@@ -349,10 +353,10 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            hideKeyboard();
             showProgress(true);
             mUserService.register(mEmailView.getText().toString(), mPasswordView.getText().toString(),
                     mFullNameView.getText().toString(), mPhoneNumberView.getText().toString());
-            hideKeyboard();
         }
     }
     private void attemptLogin() {
@@ -392,9 +396,9 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            hideKeyboard();
             showProgress(true);
             mUserService.login(email, password);
-            hideKeyboard();
         }
     }
 
@@ -497,7 +501,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
             GoogleSignInAccount acct = result.getSignInAccount();
             mUserService.loginGoogle(acct.getEmail(), acct.getDisplayName(),acct.getIdToken(), "");
         } else {
-            Snackbar.make(mCoordinatorView, R.string.error_unable_to_register, Snackbar.LENGTH_LONG);
+            Snackbar.make(mCoordinatorView, R.string.error_unable_to_login, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -523,6 +527,7 @@ public class LoginActivity extends AppCompatActivity implements UserService.User
         } else  if (serviceType == UserService.USER_SERVICE_REGISTER) {
             if (success) {
                 toggleUIMode();
+                Snackbar.make(mCoordinatorView, R.string.text_register_success, Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(mCoordinatorView, R.string.error_unable_to_register, Snackbar.LENGTH_LONG).show();
             }

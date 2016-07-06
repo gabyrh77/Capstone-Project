@@ -4,6 +4,7 @@
     <string name="title_fragment_main">Explora Nuestro Menú</string>
     <string name="title_fragment_product">Detalle del producto</string>
     <string name="title_fragment_order">Órdenes</string>
+    <string name="title_fragment_order_placed">Listo!</string>
     <string name="title_fragment_review_order">Cesta de compra</string>
     <string name="title_fragment_confirm">Confirme su pedido</string>
     <string name="title_update_amount_order">Cuántos?</string>
@@ -31,13 +32,16 @@
     <string name="error_unable_to_login">Algo salió mal con su inicio de sesión.</string>
     <string name="error_field_required">Campo requerido</string>
     <string name="permission_rationale">El permiso de contactos es requerido para autocompletar su correo electrónico.</string>
-    <string name="permission_location">Necesitamos el permiso de ubicación para entregar su pedido.</string>
+    <string name="error_unable_to_logout">Algo salió mal con el proceso de cerrar sesión.</string>
     <string name="text_new_user">Usuario nuevo?</string>
     <string name="text_click_here">Presione aquí.</string>
+    <string name="text_register_success">Su registro fue exitoso, ahora puede iniciar sesión.</string>
 
 
     <!-- string related to main activities -->
-    <string name="error_unable_to_logout">Algo salió mal con el proceso de cerrar sesión.</string>
+    <string name="permission_location">Necesitamos el permiso de ubicación para entregar su pedido.</string>
+    <string name="message_order_placed">Su orden fue procesada, le notificaremos cuando esté por llegar.</string>
+    <string name="error_order_not_placed">Su orden no puedo ser procesada, por favor intente de nuevo o contacte a soporte.</string>
     <string name="navigation_drawer_open">Abrir menú vertical</string>
     <string name="navigation_drawer_close">Cerrar menú vertical</string>
     <string name="navigation_profile_photo_desc">Foto de perfil</string>

@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/small_margin"
             android:layout_weight="1"
+            android:textAlignment="viewEnd"
             android:layout_gravity="center_vertical|end"/>
     </LinearLayout>
 

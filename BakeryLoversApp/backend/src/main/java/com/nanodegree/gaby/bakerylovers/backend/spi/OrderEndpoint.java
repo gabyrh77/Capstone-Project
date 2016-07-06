@@ -6,6 +6,7 @@
 
 package com.nanodegree.gaby.bakerylovers.backend.spi;
 
+import com.google.android.gcm.server.Message;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -19,11 +20,8 @@ import com.nanodegree.gaby.bakerylovers.backend.db.OrderDetailObject;
 import com.nanodegree.gaby.bakerylovers.backend.db.OrderRecord;
 import com.nanodegree.gaby.bakerylovers.backend.db.UserRecord;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -49,8 +47,8 @@ import static com.nanodegree.gaby.bakerylovers.backend.db.OfyService.ofy;
 )
 public class OrderEndpoint {
     private static final Logger log = Logger.getLogger(OrderEndpoint.class.getName());
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US);
-
+    private static final int DELAY_DELIVERY_NOTIFICATION = 60000;
+    private static final String ORDER_TOPIC = "orders";
     /**
      * Register an order to the backend
      *
@@ -99,7 +97,7 @@ public class OrderEndpoint {
 
         Queue queue = QueueFactory.getDefaultQueue();
         queue.add(TaskOptions.Builder.withPayload(new DeliveryNotificationTask(record.getId()))
-                .etaMillis(System.currentTimeMillis() + 5000));
+                .etaMillis(System.currentTimeMillis() + DELAY_DELIVERY_NOTIFICATION));
 
         return record;
     }
@@ -152,17 +150,23 @@ public class OrderEndpoint {
         @Override
         public void run() {
             try{
-
                 OrderRecord orderUpdated = ofy().load().type(OrderRecord.class).id(mOrderId).now();
                 if (orderUpdated != null) {
-                    GCMMessageSender sender = new GCMMessageSender();
-                    sender.sendMessageToUser("Your order will arrive in less than 5 minutes. Enjoy our delicious products and come back soon.", orderUpdated.getUserId());
-
-                    //get current date time with Calendar()
+                    //Updated order as delivered
                     Calendar cal = Calendar.getInstance();
                     orderUpdated.setDelivered(cal.getTime());
                     ofy().save().entity(orderUpdated).now();
+
+                    Message msg = new Message.Builder()
+                            .addData("message", "Your order will arrive soon. Enjoy our delicious products and come back soon.")
+                            .addData("needsFetch", "true")
+                            .addData("endpoint", ORDER_TOPIC)
+                            .build();
+                    GCMMessageSender sender = new GCMMessageSender();
+                    sender.sendMessageToUser(msg, orderUpdated.getUserId());
                     log.info("Sent delivery notification for the userId " + orderUpdated.getUserId().toString());
+                } else {
+                    log.warning("Error sending order notifications, order not found");
                 }
             }catch (Exception e) {
                 log.warning("Error sending order notifications: " + e.getMessage());

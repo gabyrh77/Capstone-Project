@@ -21,7 +21,7 @@ public class Utils {
     }
 
     public static String getDateFormatted(Long datetime) {
-        if (datetime == null) {
+        if (datetime == null || datetime == 0) {
             return null;
         }
         Date date = new Date(datetime);

@@ -4,6 +4,7 @@
     <string name="title_fragment_main">Browse Our Menu</string>
     <string name="title_fragment_product">Product Detail</string>
     <string name="title_fragment_order">Your Orders</string>
+    <string name="title_fragment_order_placed">That\'s it!</string>
     <string name="title_fragment_review_order">Your Cart</string>
     <string name="title_fragment_confirm">Confirm Order</string>
     <string name="title_update_amount_order">How Many?</string>
@@ -31,13 +32,16 @@
     <string name="error_unable_to_login">Something went wrong with your login process.</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
-    <string name="permission_location">We need permissions to access your location.</string>
     <string name="text_new_user">New user?</string>
     <string name="text_click_here">Click here.</string>
+    <string name="error_unable_to_logout">Something went wrong. Unable to logout.</string>
+    <string name="text_register_success">Your registration was successful, you can login now.</string>
 
 
     <!-- string related to main activities -->
-    <string name="error_unable_to_logout">Something went wrong. Unable to logout.</string>
+    <string name="message_order_placed">You order was placed, we will send you a notification when is arriving.</string>
+    <string name="error_order_not_placed">Sorry, we couldn\'t process your order. Try again or contact support.</string>
+    <string name="permission_location">We need permissions to access your location.</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_profile_photo_desc">Profile photo</string>

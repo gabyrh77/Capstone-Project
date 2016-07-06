@@ -77,19 +77,6 @@ public class MenuListFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        //TODO: register receiver here
-        //TODO: if the products were not fetched, try to fetch them again
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        //TODO: unregister receiver here
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case LOADER_PRODUCTS:

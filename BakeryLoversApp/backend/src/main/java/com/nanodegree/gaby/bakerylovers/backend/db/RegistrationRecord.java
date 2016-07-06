@@ -16,8 +16,8 @@ public class RegistrationRecord {
 
     @Index
     private String regId;
-    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private Key<UserRecord> user;
+    @Index
+    private Long userId;
 
     public RegistrationRecord() {}
 
@@ -29,15 +29,11 @@ public class RegistrationRecord {
         this.regId = regId;
     }
 
-    public Key<UserRecord> getUser() {
-        return user;
-    }
-
-    public void setUser(Key<UserRecord> user) {
-        this.user = user;
-    }
-
     public Long getUserId() {
-        return user==null?null:user.getId();
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

@@ -32,13 +32,12 @@ public class GCMMessageSender {
         sendMessageToTopic(GLOBAL_TOPIC, message);
     }
 
-    public void sendMessageToUser(String message, Long userId) throws IOException{
-        Message msg = new Message.Builder().addData("message", message).build();
-        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).filter("user", Key.create(UserRecord.class, userId)).list();
+    public void sendMessageToUser(Message msgObject, Long userId) throws IOException{
+        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).filter("userId", userId).list();
         if (records != null && records.size() > 0) {
             for (int i= 0; i < records.size(); i++) {
                 RegistrationRecord record = records.get(i);
-                Result result = mSender.send(msg, record.getRegId(), 5);
+                Result result = mSender.send(msgObject, record.getRegId(), 5);
                 if (result.getMessageId() != null) {
                     log.info("Message sent to " + record.getRegId());
                     String canonicalRegId = result.getCanonicalRegistrationId();

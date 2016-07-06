@@ -19,7 +19,12 @@ import com.nanodegree.gaby.bakerylovers.activities.MainActivity;
  */
 public class GCMListenerService extends GcmListenerService {
     private static final String TAG = "GCMListenerService";
-
+    private static final String ORDER_TOPIC = "orders";
+    private static final String PRODUCT_TOPIC = "products";
+    private static final String GLOBAL_TOPIC = "global";
+    private static final String TOPICS_PREFIX = "/topics/";
+    private static final String ARG_FETCH = "needsFetch";
+    private static final String ARG_ENDPOINT = "endpoint";
     /**
      * Called when message is received.
      *
@@ -34,22 +39,33 @@ public class GCMListenerService extends GcmListenerService {
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
-        if (from.startsWith("/topics/")) {
+        if (from.startsWith(TOPICS_PREFIX)) {
             String topicName = from.substring(8);
             Log.d(TAG, "A notification arrived for the topic "+ topicName);
-            if (topicName.equals("global")){
+            if (topicName.equals(GLOBAL_TOPIC)){
                 sendNotification(message);
-            } else if (topicName.equals("products")){
+            } else if (topicName.equals(PRODUCT_TOPIC)){
                 Intent productsIntent = new Intent(getApplicationContext(), ProductsService.class);
                 productsIntent.setAction(ProductsService.ACTION_GET);
                 getApplicationContext().startService(productsIntent);
-            } else if (topicName.equals("orders")){
+            } else if (topicName.equals(ORDER_TOPIC)){
                 Intent ordersIntent = new Intent(getApplicationContext(), OrdersService.class);
                 ordersIntent.setAction(OrdersService.ACTION_GET);
                 getApplicationContext().startService(ordersIntent);
             }
         } else {
             sendNotification(message);
+            if (data.getString(ARG_FETCH, "").equals("true")) {
+                if (data.getString(ARG_ENDPOINT, "").equals(PRODUCT_TOPIC)){
+                    Intent productsIntent = new Intent(getApplicationContext(), ProductsService.class);
+                    productsIntent.setAction(ProductsService.ACTION_GET);
+                    getApplicationContext().startService(productsIntent);
+                } else if (data.getString(ARG_ENDPOINT, "").equals(ORDER_TOPIC)){
+                    Intent ordersIntent = new Intent(getApplicationContext(), OrdersService.class);
+                    ordersIntent.setAction(OrdersService.ACTION_GET);
+                    getApplicationContext().startService(ordersIntent);
+                }
+            }
         }
     }
     // [END receive_message]
