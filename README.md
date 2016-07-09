@@ -15,8 +15,8 @@ In order for this solution to run it's necessary to include the following keys:
 - GCM id
 
 Thrid party libraries:
--Retrofit
--RxJava
--Glide
+- Retrofit
+- RxJava
+- Glide
 
 
