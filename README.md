@@ -13,7 +13,6 @@ In order for this solution to run it's necessary to include the following keys:
 - Server client id
 - Android client id
 - GCM id
-- 
 
 Thrid party libraries:
 -Retrofit
