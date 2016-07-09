@@ -7,10 +7,17 @@ Bakery Lovers is an online shopping solution that includes:
 
   https://capstone-project-8df9f.appspot.com/
   
-- Android application that allows users to register, sign in using their google account, browse products, create orders, select their location in google maps, receive delivery notifications, add a widget to their home screen.
+- Android application that allows users to register, sign in using their google account, browse products, place orders, select their location in google maps, receive delivery notifications, add a widget to their home screen. Includes RTL support, accesibility and two languages (english/spanish).
 
 In order for this solution to run it's necessary to include the following keys:
 - Server client id
 - Android client id
 - GCM id
+- 
+
+Thrid party libraries:
+-Retrofit
+-RxJava
+-Glide
+
 
