@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "751231065544",
+    "project_id": "capstone-project-8df9f"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751231065544:android:8bcbd0788bc5e8f0",
+        "android_client_info": {
+          "package_name": "com.nanodegree.gaby.bakerylovers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751231065544-5hph5dj304r41balg0dqomkjlgdbkmb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nanodegree.gaby.bakerylovers",
+            "certificate_hash": "250E31202F468FDFE5311B8F910FFFA7CF2E2212"
+          }
+        },
+        {
+          "client_id": "751231065544-53j39qglpu2ue2k7s3cu8ase4c154a1l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nanodegree.gaby.bakerylovers",
+            "certificate_hash": "8B007C2EDF6962F00D539E6553B24D9A5F5C2EC2"
+          }
+        },
+        {
+          "client_id": "751231065544-ff8inh00ic2dkkajsjkvouqfca5qmke6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAZWmaKESxjkkyNuNAgqsHLgnAGEkDxNQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

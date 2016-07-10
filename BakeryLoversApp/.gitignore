@@ -50,6 +50,3 @@ build/
 
 # Android Studio captures folder
 captures/
-
-## config file
-app/google-services.json

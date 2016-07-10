@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="activity_horizontal_margin">64dp</dimen>
+    <dimen name="small_margin">10dp</dimen>
+    <dimen name="address_column_width">350dp</dimen>
+    <dimen name="small_item_size">120dp</dimen>
+</resources>
