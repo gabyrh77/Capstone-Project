@@ -97,6 +97,10 @@ public class UserService {
         return mSharedPrefLogin.getBoolean(mContext.getString(R.string.pref_pending_products_update_key), false);
     }
 
+    public boolean isPendingOrdersUpdate() {
+        return mSharedPrefLogin.getBoolean(mContext.getString(R.string.pref_pending_orders_update_key), false);
+    }
+
     public static String getUserSessionId(Context context) {
         SharedPreferences sharedPrefLogin = context.getSharedPreferences(
                 context.getString(R.string.preference_session_file_key), Context.MODE_PRIVATE);

@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         fetchProducts();
-
-       fetchOrders();
+        fetchOrders();
 
         mUserService = new UserService(this);
         mCoordinatorView = (CoordinatorLayout) findViewById(R.id.coordinator_main_view);
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.i(TAG, "Device is not supported.");
+                Log.e(TAG, "Device does not support google play services.");
                 finish();
             }
             return false;
@@ -219,6 +218,9 @@ public class MainActivity extends AppCompatActivity
                 if (mUserService.isPendingProductsUpdate()) {
                     fetchProducts();
                 }
+                if (mUserService.isPendingOrdersUpdate()) {
+                    fetchOrders();
+                }
             } else {
                 Snackbar.make(mCoordinatorView, getString(R.string.text_network), Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.action_settings), new View.OnClickListener() {
@@ -292,17 +294,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onToggleOrderItemClick(boolean added, long productId, double price) {
+    public void onToggleOrderItemClick(boolean added, long productId, double price, String productName) {
         if (!added) {
-            Log.d(TAG, "Add to cart the item: " + String.valueOf(productId));
             Intent bookIntent = new Intent(this, CurrentOrderService.class);
             bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
             bookIntent.putExtra(CurrentOrderService.PRODUCT_PRICE, price);
             bookIntent.setAction(CurrentOrderService.ACTION_ADD);
             startService(bookIntent);
-            Snackbar.make(mCoordinatorView, getString(R.string.product_added_to_cart), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mCoordinatorView, getString(R.string.product_added_to_cart, productName), Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(mCoordinatorView, getString(R.string.msg_product_added_to_cart), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mCoordinatorView, getString(R.string.msg_product_added_to_cart, productName), Snackbar.LENGTH_SHORT).show();
         }
     }
 

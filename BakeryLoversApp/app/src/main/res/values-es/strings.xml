@@ -47,8 +47,8 @@
     <string name="navigation_profile_photo_desc">Foto de perfil</string>
     <string name="product_not_available">Producto no disponible</string>
     <string name="product_add_to_cart">Añadir a su cesta de compra</string>
-    <string name="product_added_to_cart">Producto añadido a su cesta de compra</string>
-    <string name="msg_product_added_to_cart">Este producto ya se encuentra en su cesta de compra.</string>
+    <string name="product_added_to_cart">%1$s fue añadido a su cesta de compra</string>
+    <string name="msg_product_added_to_cart">%1$s ya se encuentra en su cesta de compra.</string>
     <string name="text_select_address">Por favor seleccione su ubicación para continuar con el proceso de compra.</string>
 
     <string name="text_order_delivered">Entregado</string>

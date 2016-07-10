@@ -2,10 +2,13 @@ package com.nanodegree.gaby.bakerylovers.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.nanodegree.gaby.bakerylovers.MainApplication;
+import com.nanodegree.gaby.bakerylovers.R;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.MyApi;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.CollectionResponseOrderRecord;
 import com.nanodegree.gaby.bakerylovers.backend.myApi.model.OrderDetailObject;
@@ -26,15 +29,17 @@ public class OrdersService extends IntentService {
     private static final String TAG = "OrdersService";
     public static final String ACTION_GET = "com.nanodegree.gaby.bakerylovers.services.action.GET_ORDERS";
     public static final String ACTION_DELETE = "com.nanodegree.gaby.bakerylovers.services.action.ORDER_DELETE";
+    private SharedPreferences mSharedPref;
+
     public OrdersService() {
         super(TAG);
-
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "called onHandleIntent");
         if (intent != null) {
+            mSharedPref = getApplicationContext().getSharedPreferences(
+                    getApplicationContext().getString(R.string.preference_session_file_key), Context.MODE_PRIVATE);
             final String action = intent.getAction();
             if (ACTION_GET.equals(action)) {
                 getOrders();
@@ -43,11 +48,9 @@ public class OrdersService extends IntentService {
     }
 
     private void getOrders() {
-        Log.d(TAG, "called get orders");
         MyApi myApiService = ((MainApplication)getApplication()).getAPIService();
         try {
            CollectionResponseOrderRecord ordersWrapper = myApiService.order().list(UserService.getUserSessionId(getBaseContext())).execute();
-            Log.d(TAG, "called get orders");
             if (ordersWrapper != null &&  ordersWrapper.getItems() != null) {
                 List<OrderRecord> orders = ordersWrapper.getItems();
                 Vector<ContentValues> contentValuesVector = new Vector<>(orders.size());
@@ -84,22 +87,29 @@ public class OrdersService extends IntentService {
 
                 // perform bulk insert
                 if ( contentValuesVector.size() > 0 ) {
-                    Log.e(TAG, "BULK INSERT ORDERS " + String.valueOf(contentValuesVector.size()));
+                    Log.d(TAG, "BULK INSERT ORDERS " + String.valueOf(contentValuesVector.size()));
                     ContentValues[] cvArray = new ContentValues[contentValuesVector.size()];
                     contentValuesVector.toArray(cvArray);
                     getContentResolver().bulkInsert(DBContract.OrderEntry.CONTENT_URI, cvArray);
 
                     //order details
-                    Log.e(TAG, "BULK INSERT ORDERS DETAILS" + String.valueOf(detailsValuesArray.size()));
+                    Log.d(TAG, "BULK INSERT ORDERS DETAILS" + String.valueOf(detailsValuesArray.size()));
                     ContentValues[] cvDetailsArray = new ContentValues[detailsValuesArray.size()];
                     detailsValuesArray.toArray(cvDetailsArray);
                     getContentResolver().bulkInsert(DBContract.OrderDetailEntry.CONTENT_URI, cvDetailsArray);
                 }
             }
+            savePendingUpdateStatus(false);
         } catch (IOException e) {
             Log.e(TAG, "Error trying to get products");
             Log.e(TAG, e.getMessage());
-            //SEND BROADCAST CONNECTION FAILED
+            savePendingUpdateStatus(true);
         }
+    }
+
+    private void savePendingUpdateStatus(boolean status) {
+        SharedPreferences.Editor editor = mSharedPref.edit();
+        editor.putBoolean(getApplicationContext().getString(R.string.pref_pending_orders_update_key), status);
+        editor.commit();
     }
 }

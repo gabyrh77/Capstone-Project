@@ -47,8 +47,8 @@
     <string name="navigation_profile_photo_desc">Profile photo</string>
     <string name="product_not_available">Product not available</string>
     <string name="product_add_to_cart">Add this product to your cart</string>
-    <string name="product_added_to_cart">This product was added to your cart</string>
-    <string name="msg_product_added_to_cart">You already added this to your cart.</string>
+    <string name="product_added_to_cart">%1$s was added to your cart</string>
+    <string name="msg_product_added_to_cart">You already added %1$s to your cart.</string>
     <string name="text_select_address">Please select a deliver address to continue with your order.</string>
     <string name="text_order_delivered">Delivered</string>
     <string name="text_order_placed">Placed</string>

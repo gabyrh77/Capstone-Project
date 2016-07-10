@@ -36,7 +36,6 @@ public class ProductsService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "called onHandleIntent");
         if (intent != null) {
             mSharedPref = getApplicationContext().getSharedPreferences(
                     getApplicationContext().getString(R.string.preference_session_file_key), Context.MODE_PRIVATE);
@@ -48,10 +47,8 @@ public class ProductsService extends IntentService {
     }
 
     private void getProducts() {
-        Log.d(TAG, "called get products");
         try {
             CollectionResponseProductRecord productsWrapper = ((MainApplication)getApplication()).getAPIService().product().list().execute();
-            Log.d(TAG, "called get products");
             if (productsWrapper != null &&  productsWrapper.getItems() != null) {
                 List<ProductRecord> products = productsWrapper.getItems();
                 Vector<ContentValues> contentValuesVector = new Vector<>(products.size());
@@ -71,7 +68,7 @@ public class ProductsService extends IntentService {
 
                 // perform bulk insert
                 if ( contentValuesVector.size() > 0 ) {
-                    Log.e(TAG, "BULK INSERT PRODUCTS " + String.valueOf(contentValuesVector.size()));
+                    Log.d(TAG, "BULK INSERT PRODUCTS " + String.valueOf(contentValuesVector.size()));
                     ContentValues[] cvArray = new ContentValues[contentValuesVector.size()];
                     contentValuesVector.toArray(cvArray);
                     getContentResolver().bulkInsert(DBContract.ProductEntry.CONTENT_URI, cvArray);
