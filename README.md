@@ -28,6 +28,9 @@ Pending improvements:
 - Save user’s delivery address
 - Sending language config to the backend
 - Design update: Implement white toolbar with orange as accent color (remove green color)
+- Allow a user to be logged in from more than one device
+- Firebase integration
+
 
 
 
