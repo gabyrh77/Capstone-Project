@@ -4,10 +4,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release_config {
-            keyAlias 'LeydiBakeryLovers'
-            keyPassword ''
+            keyAlias 'BakeryLoversKey'
+            keyPassword '123456'
             storeFile file('bakery_lovers_signing.jks')
-            storePassword ''
+            storePassword '123456'
         }
     }
     compileSdkVersion 23
@@ -18,8 +18,8 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        resValue "string", "server_client_id", ""
-        resValue "string", "google_maps_key", ""
+        resValue "string", "server_client_id", "751231065544-ff8inh00ic2dkkajsjkvouqfca5qmke6.apps.googleusercontent.com"
+        resValue "string", "google_maps_key", "AIzaSyBAZWmaKESxjkkyNuNAgqsHLgnAGEkDxNQ"
     }
     buildTypes {
         release {
