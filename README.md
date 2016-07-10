@@ -14,10 +14,11 @@ In order for this solution to run it's necessary to include the following keys:
 - Android client id
 - GCM id
 
-Thrid party libraries:
-- Retrofit
-- RxJava
+Components and libraries:
+- App engine java SDK
+- GCM server
 - Glide
+- Google play services: auth, gcm and location
 
 Pending improvements:
 - Get user profile photo from google account
