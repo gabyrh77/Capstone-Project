@@ -19,4 +19,15 @@ Thrid party libraries:
 - RxJava
 - Glide
 
+Pending improvements:
+- Get user profile photo from google account
+- Implement profile module
+- Identity toolkit integration
+- Add option add to cart from product detail
+- Save user’s delivery address
+- Sending language config to the backend
+- Design update: Implement white toolbar with orange as accent color (remove green color)
+
+
+
 
