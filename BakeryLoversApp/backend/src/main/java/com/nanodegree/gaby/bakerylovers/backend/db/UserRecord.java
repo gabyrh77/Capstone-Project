@@ -19,6 +19,7 @@ public class UserRecord {
     private String phoneNumber;
     @Index private String loginToken;
     private boolean isGoogleAccount;
+    private String googleToken;
 
     public UserRecord() {}
 
@@ -84,5 +85,13 @@ public class UserRecord {
 
     public void setLoginToken(String loginToken) {
         this.loginToken = loginToken;
+    }
+
+    public String getGoogleToken() {
+        return googleToken;
+    }
+
+    public void setGoogleToken(String googleToken) {
+        this.googleToken = googleToken;
     }
 }

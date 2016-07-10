@@ -112,13 +112,14 @@ public class UserEndpoint {
             user.setEmail(email);
             user.setFullName(name);
             user.setPhoneNumber(phone);
-            user.setLoginToken(token);
+            user.setGoogleToken(token);
             user.setGoogleAccount(true);
         } else {
             log.info("User " + email + " already exists, update as a google account");
             user.setGoogleAccount(true);
-            user.setLoginToken(token);
+            user.setGoogleToken(token);
         }
+        user.setLoginToken(generateSessionId());
         ofy().save().entity(user).now();
         return user;
     }

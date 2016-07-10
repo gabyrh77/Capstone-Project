@@ -24,11 +24,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -123,7 +121,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem placeItem = menu.findItem(R.id.action_place_order);
         MenuItem locationItem = menu.findItem(R.id.action_location);
-        if (mDeliverLocation == null || mCartCount == 0) {
+        if (!mOrderPlaced && (mDeliverLocation == null || mCartCount == 0)) {
             placeItem.setVisible(false);
         } else {
             placeItem.setVisible(true);
@@ -270,7 +268,6 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
 
     @Override
     public void onDeleteProductClick(long productId) {
-        Log.d(TAG, "Remove from cart the item: " + String.valueOf(productId));
         Intent bookIntent = new Intent(this, CurrentOrderService.class);
         bookIntent.putExtra(CurrentOrderService.PRODUCT_ID, productId);
         bookIntent.setAction(CurrentOrderService.ACTION_DELETE);
@@ -287,7 +284,6 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
     }
 
     private void handleContinueAction() {
-        Log.d(TAG, "Selected fragment " + mSelectedFragment);
         if (mSelectedFragment.equals(TAG_FRAGMENT_REVIEW_ORDER)) {
             if (mDeliverLocation == null) {
                 Snackbar.make(mCoordinatorLayout, getString(R.string.text_select_address), Snackbar.LENGTH_LONG).show();
@@ -352,7 +348,7 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
                 mDeliverLocation = place.getName().toString();
                 setFragment(TAG_FRAGMENT_CONFIRM_ORDER, ConfirmOrderFragment.newInstanceBundle(mDeliverLocation));
             }else {
-                Toast.makeText(getApplicationContext(), getString(R.string.text_select_address), Toast.LENGTH_LONG).show();
+                Snackbar.make(mCoordinatorLayout, getString(R.string.text_select_address), Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -372,7 +368,6 @@ public class ReviewOrderActivity extends AppCompatActivity implements  CurrentOr
 
     @Override
     public void onBackStackChanged() {
-       Log.d(TAG, "Called back stack changed");
         if (mSelectedFragment.equals(TAG_FRAGMENT_CONFIRM_ORDER)) {
             mSelectedFragment = TAG_FRAGMENT_REVIEW_ORDER;
         } else {
